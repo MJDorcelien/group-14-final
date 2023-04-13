@@ -3,9 +3,44 @@
 {% block title %}Friends{% endblock %}
 
 {% block body %}
-    <h2>Friends</h2>
-    <a href="/friends/profile">Individual Friend's Profile</a>
+    <h2>Your Friends</h2>
+    <!--<a href="/friends/profile">Individual Friend's Profile</a>
     <p>this page is supposed to hold all the friends of the current user</p>
     <p>should list users in mutual courses and actual friends</p>
     <p>should also have a like to the friend's individual profile</p>
+    <h2>All Courses</h2> -->
+    <div class="container text-center">
+        <div class="row align-items-start">
+            <div class="col">
+                <div class="card bg-dark" style="width: 18rem;">
+                    <img src="/static/images/com_sci_photo.png" class="card-img-top" alt="Computer Science">
+                    <div class="card-body">
+                        <h5 class="card-title text-start text-white">Billy Bob</h5>
+                        <p class="card-text text-start text-white">Billy Bob's bombastic bio.</p>
+                        <a href="/friends/profile" class="card-link">View Profile</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card bg-dark" style="width: 18rem;">
+                    <img src="/static/images/com_sci_photo.png" class="card-img-top" alt="Computer Science">
+                    <div class="card-body">
+                        <h5 class="card-title text-start text-white">Billy Bob</h5>
+                        <p class="card-text text-start text-white">Billy Bob's bombastic bio.</p>
+                        <a href="/friends/profile" class="card-link">View Profile</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card bg-dark" style="width: 18rem;">
+                    <img src="/static/images/com_sci_photo.png" class="card-img-top" alt="Computer Science">
+                    <div class="card-body">
+                        <h5 class="card-title text-start text-white">Billy Bob</h5>
+                        <p class="card-text text-start text-white">Billy Bob's bombastic bio.</p>
+                        <a href="/friends/profile" class="card-link">View Profile</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
