@@ -1,0 +1,47 @@
+.h1_login {
+    font-family: 'Raleway', sans-serif;
+    font-size: 16px;
+    color: white;
+    text-align: center;
+  } 
+
+.login_welcome {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+.parentcontainer {
+    padding-top: 50px;
+    padding-bottom: 50px;
+    padding-left: 50px;
+}
+.logincontainer {
+    background-color: #2C2F33;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+    padding-bottom: 20px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.buttons {
+    justify-content: center;
+    align-items: center;
+}
+
+.accountmessage {
+    color: #FFFF;
+    font-size: 12px;
+    font-weight: bolder;    
+}
+
+
+a:link {
+    color: #FFFF
+}
+
+.login_label {
+    color:white;
+}
