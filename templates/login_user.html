@@ -1,9 +1,59 @@
 {% extends '_layout.html' %}
 
+{% block head %}
+
+<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css_files/loginstyle.css') }}">
+
+<!--For Google Fonts Raleway Regular-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Raleway&display=swap" rel="stylesheet">
+
+{% endblock %}
+
 {% block title %}LogIn | SignUp{% endblock %}
 
 {% block body %}
-    <h2>LogIn/SignUp</h2>
-    <p>this page is supposed to have the login/signup</p>
-    <p>this tab is supposed to only be visible if the user is not signed up</p>
+    <div class = "parentcontainer">
+    <div class="logincontainer" style = "width: 33%;" style = "height: 60%;">
+        <form>
+    
+            <!--Page Heading-->
+            <div class = "login_welcome"><h1 class = h1_login style = "color: white; font-family: Raleway, sans-serif">Login To Enlighten</h1></div>
+                <!--Username Label and Input Group-->
+                <label class = login_label for="username" style = "color: white; font-family: Raleway, sans-serif;">Username</label>
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon2">
+                </div>
+        
+                <!--Password Label and Input Group-->
+                <label for="password" style = "color: white; font-family: Raleway, sans-serif;">Password</label>
+                <div class="input-group mb-3">
+                    <input type="password" class="form-control" placeholder="Password" aria-label="Password" aria-describedby="basic-addon2">
+                </div>
+            <div class = buttons>
+
+            <div class = accountmessage style = "font-family: Raleway, sans-serif;">
+                <p4>Have An Account? Log In<br></p4>
+                <p4>Don't Have An Account? Sign Up<br></p4>
+            </div>
+
+            <!--Log In Button-->
+                <button type="button" class="btn btn-warning">Log In</button>
+                <!--<div class = "account_status"><h8 class = signup_message>Don't have an account?</h8></div>-->
+
+
+        
+                <!--Sign Up Button-->
+                <button type="button" class="btn btn-warning">Sign Up</button>
+
+            </div>
+    </div>
+    
+        </form>
+    <!--End of Text background-->
+    </div>
+
+    <!--this page is supposed to have the login/signup</p>
+    <p>this tab is supposed to only be visible if the user is not signed up</p><-->
 {% endblock %}
