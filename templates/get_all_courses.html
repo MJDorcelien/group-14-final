@@ -4,6 +4,32 @@
 
 {% block body %}
     <h2>All Courses</h2>
+
+    <!-- https://www.youtube.com/watch?v=4CJI3B8FEp8 -->
+    <!-- https://www.youtube.com/watch?v=mkXdvs8H7TA -->
+    <form action="/courses" method="post" class="buttons">
+        <h3>Enter the Chat Room</h3>
+        <div>
+            <label for="name">Name:</label>
+            <input type="text" name="name" placeholder="Pick a name!!" value="{{name}}">
+        </div>
+        <div class="join">
+            <input type="text" name="code" placeholder="Room Code" value="{{code}}">
+            <button type="submit" name="join" class="join">Join a Room</button>
+        </div>
+        <button type="submit" name="create" class="create-btn">Create a Room</button>
+        {% if error %}
+        <ul>
+            <li>{{error}}</li>
+        </ul>
+        {% endif %}
+    </form>
+
+    {% for chat in chats %}
+    <p>{{chat.post_id}}</p>
+    <p>{{chat.content}}</p>
+    {% endfor %}
+    
     <div class="container text-center">
         <div class="row align-items-start">
         <div class="col">

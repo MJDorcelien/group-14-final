@@ -2,3 +2,5 @@ venv
 __pycache__
 .DS_Store
 .env
+create_join_room.html
+in_room.html

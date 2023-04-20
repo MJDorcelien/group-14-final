@@ -13,4 +13,11 @@ class ProjectRepository:
 
         return new_user
     
+    def get_post_by_id(self, post_id):
+        return  Post.query.filter_by(post_id=post_id).first()
+    
+    def get_all_posts(self):
+        posts= Post.query.all()
+        return posts
+    
 project_repository_singleton = ProjectRepository()

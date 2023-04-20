@@ -33,6 +33,9 @@ class Person(db.Model):
         self.email=email
         self.password=password
         self.university=university
+
+    def __repr__(self) -> str:
+        return f'Person(id={self.person_id},username={self.user_name}, bio={self.bio}, email={self.email}, password={self.password}, university={self.university})'
         
 class Section(db.Model):
     section_id=db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -47,17 +50,23 @@ class Section(db.Model):
         self.university=university
         self.course=course
 
+    def __repr__(self) -> str:
+        return f'Section(id={self.section_id},title={self.title}, description={self.description},university={self.university}, course={self.course})'
+
 class Post(db.Model):
+    __tablename__="post"
     post_id=db.Column(db.Integer, primary_key=True, autoincrement=True)
     poster=db.Column(db.Integer, db.ForeignKey('person.person_id'), nullable=False)
     course=db.Column(db.Integer, db.ForeignKey('section.section_id'), nullable=False)
     date_time=db.Column(db.DateTime, nullable=False)
     content=db.Column(db.Text, nullable=False)
-    parent_post=db.Column(db.Integer, autoincrement=True)
+    parent_post=db.Column(db.Integer, autoincrement=True, nullable=True)
 
-    def __init__(self,poster:int,course:int,date_time:datetime,content:str,parent_post:int) -> None:
+    def __init__(self,poster:int,course:int,date_time:datetime,content:str) -> None:
         self.poster=poster
         self.course=course
         self.date_time=date_time
         self.content=content
-        self.parent_post=parent_post
+
+    def __repr(self) -> str:
+        return f'Post(id={self.post_id},poster={self.poster}, course={self.course}, date={self.date_time}, content={self.content}, parent={self.parent_post})'
