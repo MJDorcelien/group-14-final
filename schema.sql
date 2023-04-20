@@ -37,7 +37,7 @@ CREATE TABLE Post (
     course      INT       NOT NULL,
     date_time   TIMESTAMP NOT NULL,
     content     TEXT      NOT NULL,
-    parent_post SERIAL,
+    parent_post INT,
     PRIMARY KEY (post_id),
     FOREIGN KEY (poster) REFERENCES Person(person_id),
     FOREIGN KEY (course) REFERENCES Section(section_id)
