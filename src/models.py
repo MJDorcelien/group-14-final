@@ -53,7 +53,7 @@ class Post(db.Model):
     course=db.Column(db.Integer, db.ForeignKey('section.section_id'), nullable=False)
     date_time=db.Column(db.DateTime, nullable=False)
     content=db.Column(db.Text, nullable=False)
-    parent_post=db.Column(db.Integer, autoincrement=True)
+    parent_post=db.Column(db.Integer, nullable=True)
 
     def __init__(self,poster:int,course:int,date_time:datetime,content:str,parent_post:int) -> None:
         self.poster=poster
