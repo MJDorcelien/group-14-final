@@ -11,9 +11,7 @@
 }
 
 .parentcontainer {
-    padding-top: 50px;
-    padding-bottom: 50px;
-    padding-left: 50px;
+    padding: 50px;
 }
 .logincontainer {
     background-color: #2C2F33;
@@ -24,6 +22,8 @@
     padding-bottom: 20px;
     padding-left: 10px;
     padding-right: 10px;
+    max-width: 300px;
+    margin: 0 auto;
 }
 
 .buttons {
