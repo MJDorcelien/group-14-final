@@ -14,6 +14,7 @@ CREATE TABLE Section (
     description TEXT ,
     university  VARCHAR(50) NOT NULL,
     course      VARCHAR(50) NOT NULL,
+    main        BOOLEAN,
     PRIMARY KEY (section_id)
 );
 

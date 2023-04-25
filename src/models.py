@@ -7,7 +7,7 @@ from datetime import datetime
 db=SQLAlchemy()
 
 person_section=db.Table(
-    'person_seciton',
+    'person_section',
     db.Column("person", db.Integer, db.ForeignKey('person.person_id'), nullable=False),
     db.Column("course",db.Integer, db.ForeignKey('section.section_id'), nullable=False)
 )
@@ -43,15 +43,17 @@ class Section(db.Model):
     description=db.Column(db.Text, nullable=False)
     university=db.Column(db.String(50), nullable=False)
     course=db.Column(db.String(50), nullable=False)
+    main=db.Column(db.Boolean, nullable=False)
 
-    def __init__(self,title:str,description:str,university:str,course:str) -> None:
+    def __init__(self,title:str,description:str,university:str,course:str,main:bool) -> None:
         self.title=title
         self.description=description
         self.university=university
         self.course=course
+        self.main=main
 
     def __repr__(self) -> str:
-        return f'Section(id={self.section_id},title={self.title}, description={self.description},university={self.university}, course={self.course})'
+        return f'Section(id={self.section_id},title={self.title}, description={self.description},university={self.university}, course={self.course}, main={self.main})'
 
 class Post(db.Model):
     __tablename__="post"
@@ -68,5 +70,5 @@ class Post(db.Model):
         self.date_time=date_time
         self.content=content
 
-    def __repr(self) -> str:
+    def __repr__(self) -> str:
         return f'Post(id={self.post_id},poster={self.poster}, course={self.course}, date={self.date_time}, content={self.content}, parent={self.parent_post})'
