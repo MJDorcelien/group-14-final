@@ -2,13 +2,15 @@
 
 {% block title %}Courses Chat{% endblock %}
 
+{% block head %}
+{% endblock %}
+
 {% block body %}
     {% for course in courses %}
     {% if section == course.section_id %}
     <h2>{{exam.title}} Chat</h2>
     {% endif %}
     {% endfor %}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
 
     <div class="row text-white bg-dark-subtle">
         <div class="col-2">
@@ -31,19 +33,49 @@
             {% endfor %}
         </div>
         <div class="col-7" id="messages">
-            {% for post in posts %}
-                {% if section == post.course %}
-                    {% for user in users %}
-                        {% if user.person_id == post.poster %}
-                            <p>{{user.user_name}}: {{post.content}}</p>
-                        {% endif %}
-                    {% endfor %}
-                {% endif %}
-            {% endfor %}
+            <div id="individual">
+                {% for post in posts %}
+                    {% if section == post.course %}
+                        {% for user in users %}
+                            {% if user.person_id == post.poster %}
+                                <p>{{user.user_name}}: {{post.content}}</p>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            </div>
             <div class="inputs">
-                <input type="text" rows="3" placeholder="Message" name="message">
+                <input type="text" rows="3" placeholder="Message" name="message" id="message">
                 <button name="send" id="send-btn" onClick="sendMessage()">Send</button>
             </div>
         </div>
     </div>
+    <script>
+        var socketio=io()
+
+        const sendMessage = () => {
+            let message = document.getElementById("message").value
+            socketio.emit("new_message",message)
+            document.getElementById("message").value=""
+        }
+
+        socketio.on("chat", function(data){
+            let ul=document.getElementById("individual")
+            let li=document.createElement("p")
+            li.appendChild(document.createTextNode(data["username"]+": "+data["message"]))
+            ul.appendChild(li)
+            ul.scrolltop=ul.scrollHeight
+        })
+    </script>
+    {% for post in posts %}
+    {% if section == post.course %}
+        {% for user in users %}
+            {% if user.person_id == post.poster %}
+                <script>
+                    createMessage("{{user.user_name}}","{{post.content}}","{{post.date_time}}")
+                </script>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+{% endfor %}
 {% endblock %}

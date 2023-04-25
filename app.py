@@ -3,8 +3,7 @@ from dotenv import load_dotenv
 import os
 
 from src.models import Person, Section, Post, person_section,user_following
-from flask_socketio import join_room, leave_room, send, SocketIO
-import random
+from flask_socketio import join_room, leave_room, send, SocketIO, emit
 import datetime 
 
 load_dotenv()
@@ -37,29 +36,6 @@ def index():
 
 @app.get('/courses')
 def view_all_courses():
-    # software1=Section("Software Engineering","most useful courses","UNCC","ITSC 3155", True)
-    # software2=Section("Software Engineering","most useful courses","UNCC","ITSC 3155", False)
-    # mobile1=Section("Mobile Application Development","stupid andriod studio","UNCC","ITIS 5180",True)
-    # mobile2=Section("Mobile Application Development","stupid andriod studio","UNCC","ITIS 5180",False)
-    # db.session.add_all([software1,software2,mobile1,mobile2])
-    # db.session.commit()
-
-    # user=project_repository_singleton.get_user_by_id(7)
-    # user.course.append(software1)
-    # user.course.append(software2)
-    # user.course.append(mobile1)
-    # db.session.add(user)
-    # db.session.commit()
-
-    # date=datetime.datetime.now()
-    # post1=Post(7,5,date,"hello this is for the main chat")
-    # post2=Post(4,5,date,"this is in reponse to Britany")
-    # post3=Post(4,6,date,"whomst is this")
-    # post4=Post(4,7,date,"main chat for mobile peeps")
-    # post5=Post(7,7,date,"main chat??")
-    # db.session.add_all([post1,post2,post3,post4,post5])
-    # db.session.commit()
-
     sections=project_repository_singleton.get_user_courses(7) # need to change to the id of the auth
     return render_template('get_all_courses.html', courses=sections)
 
@@ -87,6 +63,8 @@ def view_friend_profile():
 def view_user_settings():
     return render_template('get_user_settings.html')
 
+rooms ={}
+
 @app.get('/courses/<int:section_id>')
 def view_specific_course(section_id):
     person_id=7 # this needs to get the person_id from the user
@@ -94,4 +72,35 @@ def view_specific_course(section_id):
     posts=project_repository_singleton.get_all_posts()
     course=project_repository_singleton.get_sections_by_id(section_id)
     users=project_repository_singleton.get_all_user()
-    return render_template('get_courses_chat.html',courses=courses,section=section_id,posts=posts,exam=course,users=users)
+    user=project_repository_singleton.get_user_by_id(person_id)
+    person=user.user_name
+    rooms["user"]=user
+    rooms["course"]=course
+    return render_template('get_courses_chat.html',courses=courses,section=section_id,posts=posts,exam=course,users=users,person_id=person_id,person=person)
+
+@socketio.on("connect")
+def connect(auth):
+    user=rooms["user"]
+    course=rooms["course"]
+    join_room(course.section_id)
+    emit({"name": user.user_name,"message": "has entered the room"}, broadcast=True)
+    print(f"{user.user_name} has joined {course.title} {course.section_id}")
+
+@socketio.on("disconnect")
+def disconnect():
+    user=rooms["user"]
+    course=rooms["course"]
+    leave_room(course.section_id)
+
+@socketio.on("new_message")
+def handle_new_message(message):
+    print(f"New message: {message}")
+    user=rooms["user"]
+    course=rooms["course"]
+    date=datetime.datetime.now()
+
+    post=Post(user.person_id,course.section_id,date,message)
+    db.session.add(post)
+    db.session.commit()
+
+    emit("chat",{"message": message,"username": user.user_name},broadcast=True)
