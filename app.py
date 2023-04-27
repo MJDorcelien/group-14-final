@@ -1,6 +1,8 @@
 from flask import Flask, abort, redirect,session, render_template, request, url_for
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
+from src.models import db, Person
+import bcrypt
 import os
 
 from src.models import Person, Section, Post, person_section,user_following
@@ -88,12 +90,17 @@ def view_user_profile():
 def login_user():
     return render_template('login_user.html')
 
+@app.get('/signup')
+def signup_user():
+    return render_template('sign_up_user.html')
+
 @app.post('/login')
 def login():
     #session['user'] = {
       #      'username' : username
       #  }
       pass
+
 @app.get('/friends/profile')
 def view_friend_profile():
     return render_template('get_friends_profile.html')
@@ -101,6 +108,46 @@ def view_friend_profile():
 @app.get('/profile/settings')
 def view_user_settings():
     return render_template('get_user_settings.html')
+
+@app.route('/login', methods=['POST'])
+def login():
+    username = request.form['username']
+    password = request.form['password'].encode('utf-8')
+    # Retrieve the user with the given username from the database
+    user = Person.query.filter_by(username=username).first()
+
+    if user is None:
+        return 'Invalid username or password'
+
+    # Use bcrypt to check if the provided password matches the stored hashed password
+    if bcrypt.checkpw(password, user.password.encode('utf-8')):
+        # Redirect to the page you want the user to go to after they login.
+        # I don't know what page to send them to lol. You guys have my permission to change
+        # this if you want. Right now it is to the index page.
+        return redirect('/') 
+    else:
+        return 'Invalid username or password'
+
+@app.route('/signup', methods=['POST'])
+def signup():
+    username = request.form['username']
+    password = request.form['password'].encode('utf-8')
+
+    # Hash the password using bcrypt
+    hashed_password = bcrypt.hashpw(password, bcrypt.gensalt())
+
+    # Create a new user with the hashed password
+    user = Person(username=username, password=hashed_password)
+
+    # Try to add the new user to the database
+    try:
+        db.session.add(user)
+        db.session.commit()
+        return 'User created successfully'
+    except:
+        db.session.rollback()
+        return 'User already exists'
+    
 
 @app.get('/courses/<int:section_id>')
 def view_specific_course(section_id):
