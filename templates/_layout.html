@@ -38,12 +38,18 @@
           <li class="nav-item">
             <a class="nav-link text-white" href="/friends">Friends</a>
           </li>
+          
+          {% if session.user %}
           <li class="nav-item">
             <a class="nav-link text-white" href="/profile">Profile</a>
           </li>
+          {% else %}
           <li class="nav-item">
             <a class="nav-link text-white" href="/login">Login/Signup</a>
           </li>
+          {% endif %}
+
+
           <!-- <li class="nav-item">
             <a class="nav-link text-white" href="/create-join">Room Stuff</a>
           </li> -->
