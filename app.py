@@ -1,5 +1,7 @@
 from flask import Flask, abort, redirect, render_template, request
 from dotenv import load_dotenv
+from src.models import db, Person
+import bcrypt
 import os
 
 load_dotenv()
@@ -45,6 +47,10 @@ def view_user_profile():
 def login_user():
     return render_template('login_user.html')
 
+@app.get('/signup')
+def signup_user():
+    return render_template('sign_up_user.html')
+
 @app.get('/friends/profile')
 def view_friend_profile():
     return render_template('get_friends_profile.html')
@@ -57,3 +63,44 @@ def view_user_settings():
 @app.get('/courses/specific')
 def view_specific_course():
     return render_template('get_courses_chat.html')
+
+@app.route('/login', methods=['POST'])
+def login():
+    username = request.form['username']
+    password = request.form['password'].encode('utf-8')
+        # Retrieve the user with the given username from the database
+        user = Person.query.filter_by(username=username).first()
+
+        if user is None:
+            return 'Invalid username or password'
+
+        # Use bcrypt to check if the provided password matches the stored hashed password
+        if bcrypt.checkpw(password, user.password.encode('utf-8')):
+            return 'Login successful'
+        else:
+            return 'Invalid username or password'
+    # Redirect to the page you want the user to go to after they login
+    # 
+    return redirect('/')
+
+@app.route('/signup', methods=['POST'])
+def signup():
+    username = request.form['username']
+    password = request.form['password'].encode('utf-8')
+
+    # Hash the password using bcrypt
+    hashed_password = bcrypt.hashpw(password, bcrypt.gensalt())
+
+    # Create a new user with the hashed password
+    user = Person(username=username, password=hashed_password)
+
+    # Try to add the new user to the database
+    try:
+        db.session.add(user)
+        db.session.commit()
+        return 'User created successfully'
+    except:
+        db.session.rollback()
+        return 'User already exists'
+    
+
