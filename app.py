@@ -1,4 +1,5 @@
 from flask import Flask, abort, redirect,session, render_template, request, url_for
+from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 import os
 
@@ -13,7 +14,6 @@ from src.project_repository import project_repository_singleton
 from src.models import db
 
 app = Flask(__name__)
-app.config["SECRET_KEY"] = "secret" 
 socketio=SocketIO(app)
 
 if __name__ == "__main__":
@@ -26,6 +26,8 @@ db_port=os.getenv('DB_PORT')
 db_name=os.getenv('DB_NAME')
 app.config['SQLALCHEMY_DATABASE_URI']\
     =f'postgresql://{db_user}:{db_pass}@{db_host}:{db_port}/{db_name}'
+
+app.secret_key = os.getenv('APP_SECRET')
 
 db.init_app(app)
 
@@ -67,18 +69,31 @@ def view_all_courses():
 def search_all_universities():
     return render_template('join_university.html')
 
+@app.post('/join')
+def add_uni():
+    # Will be implemented 
+    pass
+
 @app.get('/friends')
 def view_all_friends():
     return render_template('get_all_friends.html')
 
 @app.get('/profile')
 def view_user_profile():
+    if 'user' not in session:
+        abort(401)
     return render_template('get_user_profile.html')
 
 @app.get('/login')
 def login_user():
     return render_template('login_user.html')
 
+@app.post('/login')
+def login():
+    #session['user'] = {
+      #      'username' : username
+      #  }
+      pass
 @app.get('/friends/profile')
 def view_friend_profile():
     return render_template('get_friends_profile.html')

@@ -4,12 +4,32 @@
 
 {% block body %}
 
-<div class="text-bg-secondary p-3" style="background-color:#2C2F33; width:955px; height: 150px; margin-top:150px; margin-left:150px">
+{% if user.university == null %}
+<div class="text-bg-secondary p-3" class="position-absolute top-50 start-50 translate-middle" style="background-color:#2C2F33;">
+    {% if session.user %}
     <p style="font-size: xx-large; text-align: center; margin-bottom:25px;">Enter your <strong>school</strong> to get started</p>
     <div class="input-group input-group-sm">
         <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
-        <span class="input-group-text" id="inputGroup-sizing-sm">Join</span>
+        <span class="input-group-text" id="inputGroup-sizing-sm" action="/join" method="post">Join</span>
+    </div>
+    {% else %}
+    <p style="font-size: xx-large; text-align: center; margin-bottom:25px;">LogIn or SignUp to join a university</p>
+    <div class="input-group input-group-sm">
+        <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" disabled>
+        <span class="input-group-text" id="inputGroup-sizing-sm" action="/join" method="post" aria-disabled="true">Join</span>
+    </div>
+    {% endif %}
+    
+</div>
+
+{% else %}
+<div class="text-bg-secondary p-3" class="position-absolute top-50 start-50 translate-middle" style="background-color:#2C2F33;">
+    <p style="font-size: xx-large; text-align: center; margin-bottom:25px;">Add all your <strong>courses</strong></p>
+    <div class="input-group input-group-sm">
+        <input type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" placeholder="ITSC 3155 091, ITSC 3146 001, ...">
+        <span class="input-group-text" id="inputGroup-sizing-sm" >Join</span>
     </div>
 </div>
+{% endif %}
 
 {% endblock %}
