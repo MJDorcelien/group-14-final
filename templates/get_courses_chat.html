@@ -33,6 +33,11 @@
             {% endfor %}
         </div>
         <div class="col-7" id="messages">
+            {% if exam.main == True %}
+            <h3>{{exam.title}} Course Chat</h3>
+            {% else %}
+            <h3>{{exam.title}} Section Chat</h3>
+            {% endif %}
             <div id="individual">
                 {% for post in posts %}
                     {% if section == post.course %}
