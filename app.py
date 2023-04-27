@@ -121,12 +121,12 @@ def login():
 
     # Use bcrypt to check if the provided password matches the stored hashed password
     if bcrypt.checkpw(password, user.password.encode('utf-8')):
-        return 'Login successful'
+        # Redirect to the page you want the user to go to after they login.
+        # I don't know what page to send them to lol. You guys have my permission to change
+        # this if you want. Right now it is to the index page.
+        return redirect('/') 
     else:
         return 'Invalid username or password'
-    # Redirect to the page you want the user to go to after they login
-    # 
-    return redirect('/') 
 
 @app.route('/signup', methods=['POST'])
 def signup():
