@@ -3,7 +3,7 @@ CREATE TABLE Person (
     user_name VARCHAR(50)  NOT NULL,
     bio       VARCHAR(255) NOT NULL,
     email     VARCHAR(50)  NOT NULL,
-    "password"  VARCHAR(50)  NOT NULL,
+    "password"  VARCHAR(255)  NOT NULL,
     university VARCHAR(50) NOT NULL,
     PRIMARY KEY (person_id)
 );
@@ -14,6 +14,7 @@ CREATE TABLE Section (
     description TEXT ,
     university  VARCHAR(50) NOT NULL,
     course      VARCHAR(50) NOT NULL,
+    main        BOOLEAN,
     PRIMARY KEY (section_id)
 );
 

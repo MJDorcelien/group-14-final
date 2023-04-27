@@ -38,9 +38,12 @@
           <li class="nav-item">
             <a class="nav-link text-white" href="/friends">Friends</a>
           </li>
+          
+          {% if session.user %}
           <li class="nav-item">
             <a class="nav-link text-white" href="/profile">Profile</a>
           </li>
+          {% else %}
           <li class="nav-item">
             <a class="nav-link text-white" href="/login">Login</a>
           </li>
@@ -48,6 +51,7 @@
         <li class="nav-item">
           <a class="nav-link text-white" href="/sign_up_user">Sign Up</a>
         </li>
+          {% endif %}
         </ul>
       </div>
     </div>
