@@ -71,10 +71,8 @@ def search_all_universities():
 
 @app.post('/join')
 def add_uni():
-    i
-
-
-
+    # Will be implemented 
+    pass
 
 @app.get('/friends')
 def view_all_friends():
