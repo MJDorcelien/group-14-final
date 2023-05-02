@@ -4,10 +4,7 @@ from dotenv import load_dotenv
 from src.models import db, Person
 import bcrypt
 import os
-
-from src.models import Person, Section, Post, person_section,user_following
-from flask_socketio import join_room, leave_room, send, SocketIO, emit
-import datetime 
+from flask_socketio import SocketIO
 
 load_dotenv()
 
@@ -70,6 +67,15 @@ def login_user():
 def signup_user():
     return render_template('sign_up_user.html')
 
+# this was for sessions, but there's another function with the same name 
+# (site breaks if not commented out or name changed)
+
+# @app.post('/login')
+# def login():
+#     #session['user'] = {
+#       #      'username' : username
+#       #  }
+#       pass
 
 @app.get('/friends/profile')
 def view_friend_profile():
