@@ -4,11 +4,7 @@ from dotenv import load_dotenv
 from src.models import db, Person
 import bcrypt
 import os
-
-from src.models import Person, Section, Post, person_section,user_following
-from flask_socketio import join_room, leave_room, send, SocketIO
-import random
-import datetime 
+from flask_socketio import SocketIO
 
 load_dotenv()
 
@@ -41,29 +37,6 @@ def index():
 
 @app.get('/courses')
 def view_all_courses():
-    # software1=Section("Software Engineering","most useful courses","UNCC","ITSC 3155", True)
-    # software2=Section("Software Engineering","most useful courses","UNCC","ITSC 3155", False)
-    # mobile1=Section("Mobile Application Development","stupid andriod studio","UNCC","ITIS 5180",True)
-    # mobile2=Section("Mobile Application Development","stupid andriod studio","UNCC","ITIS 5180",False)
-    # db.session.add_all([software1,software2,mobile1,mobile2])
-    # db.session.commit()
-
-    # user=project_repository_singleton.get_user_by_id(7)
-    # user.course.append(software1)
-    # user.course.append(software2)
-    # user.course.append(mobile1)
-    # db.session.add(user)
-    # db.session.commit()
-
-    # date=datetime.datetime.now()
-    # post1=Post(7,5,date,"hello this is for the main chat")
-    # post2=Post(4,5,date,"this is in reponse to Britany")
-    # post3=Post(4,6,date,"whomst is this")
-    # post4=Post(4,7,date,"main chat for mobile peeps")
-    # post5=Post(7,7,date,"main chat??")
-    # db.session.add_all([post1,post2,post3,post4,post5])
-    # db.session.commit()
-
     sections=project_repository_singleton.get_user_courses(7) # need to change to the id of the auth
     return render_template('get_all_courses.html', courses=sections)
 
@@ -94,12 +67,15 @@ def login_user():
 def signup_user():
     return render_template('sign_up_user.html')
 
-@app.post('/login')
-def login():
-    #session['user'] = {
-      #      'username' : username
-      #  }
-      pass
+# this was for sessions, but there's another function with the same name 
+# (site breaks if not commented out or name changed)
+
+# @app.post('/login')
+# def login():
+#     #session['user'] = {
+#       #      'username' : username
+#       #  }
+#       pass
 
 @app.get('/friends/profile')
 def view_friend_profile():
