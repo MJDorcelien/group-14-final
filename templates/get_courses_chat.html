@@ -7,9 +7,9 @@
 
 {% block body %}
     {% for course in courses %}
-    {% if section == course.section_id %}
-    <h2>{{exam.title}} Chat</h2>
-    {% endif %}
+        {% if section == course.section_id %}
+            <h2>{{exam.title}} Chat</h2>
+        {% endif %}
     {% endfor %}
 
     <div class="row text-white bg-dark-subtle">
@@ -72,15 +72,4 @@
             ul.scrolltop=ul.scrollHeight
         })
     </script>
-    {% for post in posts %}
-    {% if section == post.course %}
-        {% for user in users %}
-            {% if user.person_id == post.poster %}
-                <script>
-                    createMessage("{{user.user_name}}","{{post.content}}","{{post.date_time}}")
-                </script>
-            {% endif %}
-        {% endfor %}
-    {% endif %}
-{% endfor %}
 {% endblock %}
