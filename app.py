@@ -51,6 +51,8 @@ def add_uni():
 
 @app.get('/friends')
 def view_all_friends():
+    if 'user' not in session:
+        abort(401)
     return render_template('get_all_friends.html')
 
 @app.get('/profile')
@@ -66,16 +68,6 @@ def login_user():
 @app.get('/signup')
 def signup_user():
     return render_template('sign_up_user.html')
-
-# this was for sessions, but there's another function with the same name 
-# (site breaks if not commented out or name changed)
-
-# @app.post('/login')
-# def login():
-#     #session['user'] = {
-#       #      'username' : username
-#       #  }
-#       pass
 
 @app.get('/friends/profile')
 def view_friend_profile():
@@ -100,7 +92,8 @@ def login():
         # Redirect to the page you want the user to go to after they login.
         # I don't know what page to send them to lol. You guys have my permission to change
         # this if you want. Right now it is to the index page.
-        return redirect('/') 
+       
+        return redirect('/courses') 
     else:
         return 'Invalid username or password'
 
