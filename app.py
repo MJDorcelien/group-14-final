@@ -33,9 +33,6 @@ app.config['SQLALCHEMY_ECHO']=True
 
 @app.get('/')
 def index():
-    session['user'] = {
-        'username' : 'dev123'
-    }
     return render_template('index.html')
 
 @app.get('/courses')
