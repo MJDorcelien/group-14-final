@@ -3,8 +3,15 @@
 {% block title %}Welcome| LogIn{% endblock %}
 
 {% block body %}
-    <h2>Welcome</h2>
-    <a href="/login">Login/Signup</a>
-    <p>this page is supposed ot the welcome page and have a link to the login/signup page</p>
-    <p>page should be different depending on whether the user is signed in or not</p>
+    <div class="container p-5">
+        <div class="bg-dark bg-gradient p-3 mb-5 rounded-2">
+            <h1 class="text-white text-center p-4" style="font-weight: bold;">Welcome to Enlighten!</h1>
+            <h4 class="text-white text-center pb-4 px-4">We make staying in the loop look easy! Talk to your friends from your favorite classes, stay up to date, and get help when you need it.
+                All in one convienent place. Make an account or login to get started. </h4>
+                <div class="text-center">
+                    <a class="btn btn-lg btn-outline-warning mt-3" href="/login">Login</a>
+                    <a class="btn btn-lg btn-outline-warning mt-3" href="/signup">SignUp</a>
+                </div>
+        </div>
+    </div>
 {% endblock %}
