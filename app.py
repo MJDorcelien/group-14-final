@@ -1,4 +1,4 @@
-from flask import Flask, abort, redirect,session, render_template, request, url_for
+from flask import Flask, abort, redirect, session, render_template, request, url_for
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 from src.models import db, Person
@@ -33,6 +33,9 @@ app.config['SQLALCHEMY_ECHO']=True
 
 @app.get('/')
 def index():
+    session['user'] = {
+        'username' : 'dev123'
+    }
     return render_template('index.html')
 
 @app.get('/courses')
@@ -41,18 +44,20 @@ def view_all_courses():
     return render_template('get_all_courses.html', courses=sections)
 
 @app.get('/join')
-def search_all_universities():
-    return render_template('join_university.html')
+def view_join_courses():
+    if 'user' not in session:
+        return "You must be logged in to join a course. Login or Signup to join."
+    return render_template('join_courses.html')
 
 @app.post('/join')
-def add_uni():
+def add_courses():
     # Will be implemented 
     pass
 
 @app.get('/friends')
 def view_all_friends():
     if 'user' not in session:
-        abort(401)
+        return "You must be logged in to view this page. Login or Signup to view"
     return render_template('get_all_friends.html')
 
 @app.get('/profile')
@@ -75,10 +80,16 @@ def view_friend_profile():
 
 @app.get('/profile/settings')
 def view_user_settings():
+    if 'user' not in session:
+        abort(401)
     return render_template('get_user_settings.html')
 
 @app.route('/login', methods=['POST'])
 def login():
+    # If user already logged in, redirect them to the "all courses" homepage view
+    if 'user' in session:
+        redirect('/courses')
+
     username = request.form['username']
     password = request.form['password'].encode('utf-8')
     # Retrieve the user with the given username from the database
@@ -89,10 +100,13 @@ def login():
 
     # Use bcrypt to check if the provided password matches the stored hashed password
     if bcrypt.checkpw(password, user.password.encode('utf-8')):
-        # Redirect to the page you want the user to go to after they login.
-        # I don't know what page to send them to lol. You guys have my permission to change
-        # this if you want. Right now it is to the index page.
-       
+
+        # Create user session that stores username
+        session['user'] = {
+            'username' : username
+            }
+
+        # Redirects user to "all courses" page after login 
         return redirect('/courses') 
     else:
         return 'Invalid username or password'
@@ -116,6 +130,11 @@ def signup():
     except:
         db.session.rollback()
         return 'User already exists'
+    
+@app.post('/logout')
+def logout():
+    del session['user']
+    return redirect('/')
     
 
 @app.get('/courses/<int:section_id>')
