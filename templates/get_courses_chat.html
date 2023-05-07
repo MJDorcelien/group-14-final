@@ -38,12 +38,51 @@
             {% else %}
             <h3>{{exam.title}} Section Chat</h3>
             {% endif %}
-            <div id="individual">
+            <div id="individual" class="scrollable">
                 {% for post in posts %}
                     {% if section == post.course %}
                         {% for user in users %}
                             {% if user.person_id == post.poster %}
-                                <p>{{user.user_name}}: {{post.content}}</p>
+                                {% if person_id == user.person_id %}
+                                    <p>
+                                        {{user.user_name}}: {{post.content}}
+                                            <form action="/courses/{{post.post_id}}/messages/edit" method="post">
+                                                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="{{post.content}}">Edit</button>
+
+                                                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h1 class="modal-title fs-5" id="exampleModalLabel">Edit message</h1>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <form>
+                                                            <div class="mb-3">
+                                                                <label for="recipient-name" class="col-form-label">Old Message:</label>
+                                                                <input type="text" class="form-control" id="recipient-name">
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="message-text" class="col-form-label">New Message:</label>
+                                                                <textarea class="form-control" name="message" id="message-text"></textarea>
+                                                            </div>
+                                                            </form>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                            <button type="submit" class="btn btn-primary">Edit Message</button>
+                                                        </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                            <form action="/courses/{{post.post_id}}/messages/delte" method="post">
+                                                <button type="button" class="btn-sm btn-danger">Delete</button>
+                                            </form>
+                                    </p>
+                                {% else %}
+                                    <p>{{user.user_name}}: {{post.content}}</p>
+                                {% endif %}
                             {% endif %}
                         {% endfor %}
                     {% endif %}
@@ -71,5 +110,24 @@
             ul.appendChild(li)
             ul.scrolltop=ul.scrollHeight
         })
+
+        const exampleModal = document.getElementById('exampleModal')
+        if (exampleModal) {
+        exampleModal.addEventListener('show.bs.modal', event => {
+            // Button that triggered the modal
+            const button = event.relatedTarget
+            // Extract info from data-bs-* attributes
+            const recipient = button.getAttribute('data-bs-whatever')
+            // If necessary, you could initiate an Ajax request here
+            // and then do the updating in a callback.
+
+            // Update the modal's content.
+            const modalTitle = exampleModal.querySelector('.modal-title')
+            const modalBodyInput = exampleModal.querySelector('.modal-body input')
+
+            modalTitle.textContent = `New message to ${recipient}`
+            modalBodyInput.value = recipient
+        })
+        }
     </script>
 {% endblock %}

@@ -138,6 +138,7 @@ def logout():
 
 @app.get('/courses/<int:section_id>')
 def view_specific_course(section_id):
+    edit =False
     person_id=7 # this needs to get the person_id from the user
     courses=project_repository_singleton.get_user_courses(person_id)
     posts=project_repository_singleton.get_all_posts()
@@ -147,7 +148,34 @@ def view_specific_course(section_id):
     person=user.user_name
     rooms["user"]=user
     rooms["course"]=course
-    return render_template('get_courses_chat.html',courses=courses,section=section_id,posts=posts,exam=course,users=users,person_id=person_id,person=person)
+    print(edit)
+    return render_template('get_courses_chat.html',edit=edit,courses=courses,section=section_id,posts=posts,exam=course,users=users,person_id=person_id,person=person)
+
+@app.post('/courses/<int:post_id>/messages/edit')
+def edit_specific_message(post_id):
+    post=project_repository_singleton.get_post_by_id(post_id)
+    new_message=request.form.get('message')
+    project_repository_singleton.update_post(post_id,new_message)
+
+    return redirect(f'/courses/{post.course}')
+
+@app.post('/courses/<int:post_id>/messages/delete')
+def delete_specific_message(post_id):
+    post=project_repository_singleton.get_post_by_id(post_id)
+    section=post.course
+    project_repository_singleton.delete_post(post_id)
+    
+    return redirect(f'/courses/{section}')
+
+    person_id=7 # this needs to get the person_id from the user
+    courses=project_repository_singleton.get_user_courses(person_id)
+    posts=project_repository_singleton.get_all_posts()
+    course=project_repository_singleton.get_sections_by_id(section)
+    users=project_repository_singleton.get_all_user()
+    user=project_repository_singleton.get_user_by_id(person_id)
+    person=user.user_name
+    edit=True
+    return render_template('get_courses_chat.html',edit=edit,courses=courses,section=section,posts=posts,exam=course,users=users,person_id=person_id,person=person)
 
 @socketio.on("connect")
 def connect(auth):

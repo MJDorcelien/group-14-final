@@ -31,6 +31,45 @@ class ProjectRepository:
         posts= Post.query.all()
         return posts
     
+    def update_post(self, post_id: int, message:str) -> Post:
+        post=Post.query.filter_by(post_id=post_id).first()
+        if not post:
+            raise ValueError(f'post with id {post_id} not found')
+        post.content=message
+        db.session.commit()
+        return post
+    
+    def delete_post(self, post_id: int) -> None:
+        old_post=Post.query.filter_by(post_id=post_id).first()
+        if not old_post:
+            raise ValueError(f'post with id {post_id} not found')
+        db.session.delete(old_post)
+        db.session.commit()
+        
+    # def delete_movie(self, movie_id: int) -> Movie:
+    #         """Delete a movie and return it"""
+    #         # Make sure the movie exists
+    #         old_movie = self._db.get(movie_id)
+    #         # Complain if we did not find the movie
+    #         if not old_movie:
+    #             raise ValueError(f'movie with id {movie_id} not found')
+    #         # Remove the movie from the dict
+    #         del self._db[movie_id]
+    #         return old_movie
+    
+#    def update_movie(self, movie_id: int, title: str, director: str, rating: int) -> Movie:
+#             """Update a movie and return it"""
+#             # Get a reference to the movie in the dict
+#             movie = self._db.get(movie_id)
+#             # Complain if we did not find the movie
+#             if not movie:
+#                 raise ValueError(f'movie with id {movie_id} not found')
+#             # Update the movie, which is the same object that is in the dict, so the changes stick
+#             movie.title = title
+#             movie.director = director
+#             movie.rating = rating
+#             return movie
+    
     # methods for the Section Table
     def get_all_courses(self):
         courses=Section.query.all()
