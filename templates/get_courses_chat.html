@@ -76,8 +76,8 @@
                                                     </div>
                                                 </div>
                                             </form>
-                                            <form action="/courses/{{post.post_id}}/messages/delte" method="post">
-                                                <button type="button" class="btn-sm btn-danger">Delete</button>
+                                            <form action="/courses/{{post.post_id}}/messages/delete" method="post">
+                                                <button type="submit" class="btn-sm btn-danger">Delete</button>
                                             </form>
                                     </p>
                                 {% else %}
@@ -108,7 +108,6 @@
             let li=document.createElement("p")
             li.appendChild(document.createTextNode(data["username"]+": "+data["message"]))
             ul.appendChild(li)
-            ul.scrolltop=ul.scrollHeight
         })
 
         const exampleModal = document.getElementById('exampleModal')

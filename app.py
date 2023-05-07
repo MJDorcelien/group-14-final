@@ -34,11 +34,6 @@ app.config['SQLALCHEMY_ECHO']=True
 def index():
     return render_template('index.html')
 
-@app.get('/courses')
-def view_all_courses():
-    sections=project_repository_singleton.get_user_courses(7) # need to change to the id of the auth
-    return render_template('get_all_courses.html', courses=sections)
-
 @app.get('/join')
 def view_join_courses():
     if 'user' not in session:
@@ -135,10 +130,13 @@ def logout():
     del session['user']
     return redirect('/')
     
+@app.get('/courses')
+def view_all_courses():
+    sections=project_repository_singleton.get_user_courses(7) # need to change to the id of the auth
+    return render_template('get_all_courses.html', courses=sections)
 
 @app.get('/courses/<int:section_id>')
 def view_specific_course(section_id):
-    edit =False
     person_id=7 # this needs to get the person_id from the user
     courses=project_repository_singleton.get_user_courses(person_id)
     posts=project_repository_singleton.get_all_posts()
@@ -148,8 +146,7 @@ def view_specific_course(section_id):
     person=user.user_name
     rooms["user"]=user
     rooms["course"]=course
-    print(edit)
-    return render_template('get_courses_chat.html',edit=edit,courses=courses,section=section_id,posts=posts,exam=course,users=users,person_id=person_id,person=person)
+    return render_template('get_courses_chat.html',courses=courses,section=section_id,posts=posts,exam=course,users=users,person_id=person_id,person=person)
 
 @app.post('/courses/<int:post_id>/messages/edit')
 def edit_specific_message(post_id):
@@ -166,16 +163,6 @@ def delete_specific_message(post_id):
     project_repository_singleton.delete_post(post_id)
     
     return redirect(f'/courses/{section}')
-
-    person_id=7 # this needs to get the person_id from the user
-    courses=project_repository_singleton.get_user_courses(person_id)
-    posts=project_repository_singleton.get_all_posts()
-    course=project_repository_singleton.get_sections_by_id(section)
-    users=project_repository_singleton.get_all_user()
-    user=project_repository_singleton.get_user_by_id(person_id)
-    person=user.user_name
-    edit=True
-    return render_template('get_courses_chat.html',edit=edit,courses=courses,section=section,posts=posts,exam=course,users=users,person_id=person_id,person=person)
 
 @socketio.on("connect")
 def connect(auth):
