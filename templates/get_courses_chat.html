@@ -32,46 +32,47 @@
                 {% endif %}
             {% endfor %}
         </div>
-        <div class="col-7" id="messages">
+        <div class="col-7 p-2" id="messages">
             {% if exam.main == True %}
             <h3>{{exam.title}} Course Chat</h3>
             {% else %}
             <h3>{{exam.title}} Section Chat</h3>
             {% endif %}
-            <div id="individual" class="scrollable">
+            <div id="individual" class="container h-75 p-2 overflow-auto bg-dark rounded ">
                 {% for post in posts %}
                     {% if section == post.course %}
                         {% for user in users %}
                             {% if user.person_id == post.poster %}
                                 {% if person_id == user.person_id %}
                                     <p>
-                                        {{user.user_name}}: {{post.content}}
+                                        <div class="btn-group" role="group" aria-label="Basic example">
+                                            {{user.user_name}}: {{post.content}}
                                             <form action="/courses/{{post.post_id}}/messages/edit" method="post">
                                                 <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="{{post.content}}">Edit</button>
 
                                                 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                     <div class="modal-dialog">
                                                         <div class="modal-content">
-                                                        <div class="modal-header">
-                                                            <h1 class="modal-title fs-5" id="exampleModalLabel">Edit message</h1>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <form>
-                                                            <div class="mb-3">
-                                                                <label for="recipient-name" class="col-form-label">Old Message:</label>
-                                                                <input type="text" class="form-control" id="recipient-name">
+                                                            <div class="modal-header">
+                                                                <h1 class="modal-title fs-5" id="exampleModalLabel">Edit message</h1>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                             </div>
-                                                            <div class="mb-3">
-                                                                <label for="message-text" class="col-form-label">New Message:</label>
-                                                                <textarea class="form-control" name="message" id="message-text"></textarea>
+                                                            <div class="modal-body">
+                                                                <form>
+                                                                    <div class="mb-3">
+                                                                        <input type="text" class="form-control" id="recipient-name">
+                                                                        <label for="recipient-name" class="col-form-label">Old Message:</label>
+                                                                    </div>
+                                                                    <div class="mb-3">
+                                                                        <textarea class="form-control" name="message" id="message-text"></textarea>
+                                                                        <label for="message-text" class="col-form-label">New Message:</label>
+                                                                    </div>
+                                                                </form>
                                                             </div>
-                                                            </form>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                            <button type="submit" class="btn btn-primary">Edit Message</button>
-                                                        </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                                <button type="submit" class="btn btn-primary">Edit Message</button>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -79,6 +80,7 @@
                                             <form action="/courses/{{post.post_id}}/messages/delete" method="post">
                                                 <button type="submit" class="btn-sm btn-danger">Delete</button>
                                             </form>
+                                        </div>
                                     </p>
                                 {% else %}
                                     <p>{{user.user_name}}: {{post.content}}</p>
@@ -88,9 +90,9 @@
                     {% endif %}
                 {% endfor %}
             </div>
-            <div class="inputs">
-                <input type="text" rows="3" placeholder="Message" name="message" id="message">
-                <button name="send" id="send-btn" onClick="sendMessage()">Send</button>
+            <div class="input-group mb-3">
+                <input type="text" rows="3" class="form-control" placeholder="Message" name="message" id="message">
+                <button name="send" id="send-btn" class="btn btn-primary" onClick="sendMessage()">Send</button>
             </div>
         </div>
     </div>
