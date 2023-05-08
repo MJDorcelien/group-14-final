@@ -45,3 +45,7 @@ a:link {
 .login_label {
     color:white;
 }
+
+.form-select {
+    margin-bottom: 15px;
+  }

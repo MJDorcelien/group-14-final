@@ -2,11 +2,11 @@ from flask import Flask, abort, redirect,session, render_template, request, url_
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 from src.models import db, Person
-import bcrypt
+from security import bcrypt
 import os
 
 from src.models import Person, Section, Post, person_section,user_following
-from flask_socketio import join_room, leave_room, send, SocketIO
+# from flask_socketio import join_room, leave_room, send, SocketIO
 import random
 import datetime 
 
@@ -16,10 +16,10 @@ from src.project_repository import project_repository_singleton
 from src.models import db
 
 app = Flask(__name__)
-socketio=SocketIO(app)
+# socketio=SocketIO(app)
 
-if __name__ == "__main__":
-    socketio.run(app, debug=True)
+# if __name__ == "__main__":
+    # socketio.run(app, debug=True)
 
 db_user=os.getenv('DB_USER')
 db_pass=os.getenv('DB_PASS')
@@ -32,6 +32,7 @@ app.config['SQLALCHEMY_DATABASE_URI']\
 app.secret_key = os.getenv('APP_SECRET')
 
 db.init_app(app)
+bcrypt.init_app(app)
 
 app.config['SQLALCHEMY_ECHO']=True
 
@@ -41,35 +42,15 @@ def index():
 
 @app.get('/courses')
 def view_all_courses():
-    # software1=Section("Software Engineering","most useful courses","UNCC","ITSC 3155", True)
-    # software2=Section("Software Engineering","most useful courses","UNCC","ITSC 3155", False)
-    # mobile1=Section("Mobile Application Development","stupid andriod studio","UNCC","ITIS 5180",True)
-    # mobile2=Section("Mobile Application Development","stupid andriod studio","UNCC","ITIS 5180",False)
-    # db.session.add_all([software1,software2,mobile1,mobile2])
-    # db.session.commit()
-
-    # user=project_repository_singleton.get_user_by_id(7)
-    # user.course.append(software1)
-    # user.course.append(software2)
-    # user.course.append(mobile1)
-    # db.session.add(user)
-    # db.session.commit()
-
-    # date=datetime.datetime.now()
-    # post1=Post(7,5,date,"hello this is for the main chat")
-    # post2=Post(4,5,date,"this is in reponse to Britany")
-    # post3=Post(4,6,date,"whomst is this")
-    # post4=Post(4,7,date,"main chat for mobile peeps")
-    # post5=Post(7,7,date,"main chat??")
-    # db.session.add_all([post1,post2,post3,post4,post5])
-    # db.session.commit()
-
     sections=project_repository_singleton.get_user_courses(7) # need to change to the id of the auth
     return render_template('get_all_courses.html', courses=sections)
 
 @app.get('/join')
-def search_all_universities():
-    return render_template('join_university.html')
+def view_join_courses():
+    if 'user' not in session:
+        # This should be an abort for authorization
+        abort(401)
+    return render_template('join_courses.html')
 
 @app.post('/join')
 def add_uni():
@@ -78,6 +59,9 @@ def add_uni():
 
 @app.get('/friends')
 def view_all_friends():
+    if 'user' not in session:
+            # Same thing this is authorization, not a message :)
+            abort(401)
     return render_template('get_all_friends.html')
 
 @app.get('/profile')
@@ -94,50 +78,71 @@ def login_user():
 def signup_user():
     return render_template('sign_up_user.html')
 
-@app.post('/login')
-def login():
-    #session['user'] = {
-      #      'username' : username
-      #  }
-      pass
+#@app.get('/friends')
+#def view_all_friends():
+    #if 'user' not in session:
+        #abort(401)
+    #return render_template('get_all_friends.html')
 
-@app.get('/friends/profile')
-def view_friend_profile():
-    return render_template('get_friends_profile.html')
-
-@app.get('/profile/settings')
-def view_user_settings():
-    return render_template('get_user_settings.html')
+#@app.get('/profile')
+#def view_user_profile():
+    #if 'user' not in session:
+        #abort(401)
+    #return render_template('get_user_profile.html')
 
 @app.route('/login', methods=['POST'])
 def login():
-    username = request.form['username']
-    password = request.form['password'].encode('utf-8')
+
+    # If user already logged in, redirect them to the "all courses" homepage view
+    if 'user' in session:
+        redirect('/courses')
+
+    username = request.form.get('username')
+    password = request.form.get('password').encode('utf-8')
+
+    if not username or not password:
+        abort(400)
+
     # Retrieve the user with the given username from the database
     user = Person.query.filter_by(username=username).first()
 
-    if user is None:
-        return 'Invalid username or password'
+    if not user:
+        #return redirect('/login')
+        return "Invalid Username or Password"
 
     # Use bcrypt to check if the provided password matches the stored hashed password
-    if bcrypt.checkpw(password, user.password.encode('utf-8')):
-        # Redirect to the page you want the user to go to after they login.
-        # I don't know what page to send them to lol. You guys have my permission to change
-        # this if you want. Right now it is to the index page.
-        return redirect('/') 
+    if bcrypt.check_password_hash(password, user.password.encode('utf-8')):
+
+        # Create user session that stores username
+        session['user'] = {
+            'username' : username
+            }
+        
+        # Redirects user to "all courses" page after login 
+        return redirect('/courses') 
     else:
-        return 'Invalid username or password'
+        # return redirect('/login')
+        return "Invalid Username or Password"
 
 @app.route('/signup', methods=['POST'])
 def signup():
-    username = request.form['username']
-    password = request.form['password'].encode('utf-8')
+    username = request.form.get('username')
+    password = request.form.get('password').encode('utf-8')
+    biography = request.form.get('bio')
+    email_address = request.form.get('email')
+    your_university = request.form.get('university')
+
+    if not username or not password or not biography or not email_address or not your_university:
+        abort(400)
 
     # Hash the password using bcrypt
-    hashed_password = bcrypt.hashpw(password, bcrypt.gensalt())
+    hashed_password = bcrypt.generate_password_hash(password).decode()
 
+
+    # Question For TA: Is this working correctly with sessions? How can I tell?
+    # Do these variables match those in the models schema?
     # Create a new user with the hashed password
-    user = Person(username=username, password=hashed_password)
+    user = project_repository_singleton.create_user(user_name = username, bio = biography, email = email_address, password = hashed_password, university = your_university)
 
     # Try to add the new user to the database
     try:
@@ -147,7 +152,11 @@ def signup():
     except:
         db.session.rollback()
         return 'User already exists'
-    
+
+@app.post('/logout')
+def logout():
+    del session['user']
+    return redirect('/')
 
 @app.get('/courses/<int:section_id>')
 def view_specific_course(section_id):
@@ -157,3 +166,5 @@ def view_specific_course(section_id):
     course=project_repository_singleton.get_sections_by_id(section_id)
     users=project_repository_singleton.get_all_user()
     return render_template('get_courses_chat.html',courses=courses,section=section_id,posts=posts,exam=course,users=users)
+
+
