@@ -94,8 +94,10 @@ def login():
     if bcrypt.checkpw(password, user.password.encode('utf-8')):
 
         # Create user session that stores username
+        person_id = Person.select(person_id).filter_by(username=username, password=password).first()
         session['user'] = {
-            'username' : username
+            'username' : username,
+            'person_id' : person_id
             }
 
         # Redirects user to "all courses" page after login 
