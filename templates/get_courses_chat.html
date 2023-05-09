@@ -39,14 +39,14 @@
             <h3>{{exam.title}} Section Chat</h3>
             {% endif %}
             <div id="individual" class="container h-75 p-2 overflow-auto bg-dark rounded ">
-                {% for post in posts %}
+                {% for post in list_posts %}
                     {% if section == post.course %}
                         {% for user in users %}
                             {% if user.person_id == post.poster %}
                                 {% if person_id == user.person_id %}
                                     <p>
                                         <div class="btn-group" role="group" aria-label="Basic example">
-                                            {{user.user_name}}: {{post.content}}
+                                            {{user.user_name}} {{post.post_id}}: {{post.content}}
                                             <form action="/courses/{{post.post_id}}/messages/edit" method="post">
                                                 <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="{{post.content}}">Edit</button>
 

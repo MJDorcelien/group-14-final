@@ -143,10 +143,17 @@ def view_specific_course(section_id):
     course=project_repository_singleton.get_sections_by_id(section_id)
     users=project_repository_singleton.get_all_user()
     user=project_repository_singleton.get_user_by_id(person_id)
+
+    list_posts=project_repository_singleton.get_all_posts()
+    for i in range(len(list_posts)):
+        for j in range(i+1,len(list_posts)):
+            if list_posts[i].post_id > list_posts[j].post_id:
+                list_posts[i], list_posts[j] = list_posts[j], list_posts[i]
+
     person=user.user_name
     rooms["user"]=user
     rooms["course"]=course
-    return render_template('get_courses_chat.html',courses=courses,section=section_id,posts=posts,exam=course,users=users,person_id=person_id,person=person)
+    return render_template('get_courses_chat.html',list_posts=list_posts,courses=courses,section=section_id,posts=posts,exam=course,users=users,person_id=person_id,person=person)
 
 @app.post('/courses/<int:post_id>/messages/edit')
 def edit_specific_message(post_id):
