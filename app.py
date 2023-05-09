@@ -141,7 +141,7 @@ def signup():
     except:
         db.session.rollback()
         return 'User already exists'
-    
+# logs out the user
 @app.post('/logout')
 def logout():
     del session['user']
