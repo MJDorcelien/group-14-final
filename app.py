@@ -1,14 +1,10 @@
-from flask import Flask, abort, redirect,session, render_template, request, url_for
+from flask import Flask, abort, redirect, session, render_template, request, url_for
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 from src.models import db, Person
 from security import bcrypt
 import os
-
-from src.models import Person, Section, Post, person_section,user_following
-# from flask_socketio import join_room, leave_room, send, SocketIO
-import random
-import datetime 
+from flask_socketio import SocketIO
 
 load_dotenv()
 
@@ -48,20 +44,18 @@ def view_all_courses():
 @app.get('/join')
 def view_join_courses():
     if 'user' not in session:
-        # This should be an abort for authorization
-        abort(401)
+        return "You must be logged in to join a course. Login or Signup to join."
     return render_template('join_courses.html')
 
 @app.post('/join')
-def add_uni():
+def add_courses():
     # Will be implemented 
     pass
 
 @app.get('/friends')
 def view_all_friends():
     if 'user' not in session:
-            # Same thing this is authorization, not a message :)
-            abort(401)
+        return "You must be logged in to view this page. Login or Signup to view"
     return render_template('get_all_friends.html')
 
 @app.get('/profile')
@@ -78,31 +72,24 @@ def login_user():
 def signup_user():
     return render_template('sign_up_user.html')
 
-#@app.get('/friends')
-#def view_all_friends():
-    #if 'user' not in session:
-        #abort(401)
-    #return render_template('get_all_friends.html')
+@app.get('/friends/profile')
+def view_friend_profile():
+    return render_template('get_friends_profile.html')
 
-#@app.get('/profile')
-#def view_user_profile():
-    #if 'user' not in session:
-        #abort(401)
-    #return render_template('get_user_profile.html')
+@app.get('/profile/settings')
+def view_user_settings():
+    if 'user' not in session:
+        abort(401)
+    return render_template('get_user_settings.html')
 
 @app.route('/login', methods=['POST'])
 def login():
-
     # If user already logged in, redirect them to the "all courses" homepage view
     if 'user' in session:
         redirect('/courses')
 
-    username = request.form.get('username')
-    password = request.form.get('password').encode('utf-8')
-
-    if not username or not password:
-        abort(400)
-
+    username = request.form['username']
+    password = request.form['password'].encode('utf-8')
     # Retrieve the user with the given username from the database
     user = Person.query.filter_by(username=username).first()
 
@@ -111,13 +98,13 @@ def login():
         return "Invalid Username or Password"
 
     # Use bcrypt to check if the provided password matches the stored hashed password
-    if bcrypt.check_password_hash(password, user.password.encode('utf-8')):
+    if bcrypt.checkpw(password, user.password.encode('utf-8')):
 
         # Create user session that stores username
         session['user'] = {
             'username' : username
             }
-        
+
         # Redirects user to "all courses" page after login 
         return redirect('/courses') 
     else:
@@ -152,11 +139,12 @@ def signup():
     except:
         db.session.rollback()
         return 'User already exists'
-
+    
 @app.post('/logout')
 def logout():
     del session['user']
     return redirect('/')
+    
 
 @app.get('/courses/<int:section_id>')
 def view_specific_course(section_id):
