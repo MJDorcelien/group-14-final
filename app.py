@@ -61,7 +61,7 @@ def view_all_friends():
 @app.get('/profile')
 def view_user_profile():
     if 'user' not in session:
-        abort(401)
+        return "You must be logged in to view this page. Login or Signup to view"
     return render_template('get_user_profile.html')
 
 @app.get('/login')

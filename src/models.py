@@ -19,13 +19,13 @@ user_following=db.Table(
 )
 
 class Person(db.Model):
-    __tablename__ = 'user'
+    __tablename__ = 'person'
     person_id=db.Column(db.Integer, primary_key=True, autoincrement=True)
-    user_name=db.Column(db.String(50), nullable=False)
+    user_name=db.Column(db.String(255), nullable=False)
     bio=db.Column(db.String(255), nullable=False)
     email=db.Column(db.String(255), nullable=False)
-    password=db.Column(db.String(50), nullable=False)
-    university=db.Column(db.String(50), nullable=False)
+    password=db.Column(db.String(255), nullable=False)
+    university=db.Column(db.String(255), nullable=False)
     course=db.relationship('Section',backref='courses',secondary=person_section,lazy=True)
 
     def __init__(self,user_name:str,bio:str,email:str,password:str,university:str) -> None:
