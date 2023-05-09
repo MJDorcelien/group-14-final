@@ -31,7 +31,7 @@ def test_signup_route_unhappy_route(test_client: FlaskClient):
 
 def test_signup_route_username_already_exists(test_client: FlaskClient):
     # Create a user in the database
-    person = Person(user_name='testuser', email = 'testemail@gmail.com', bio = 'testbio', university = 'testuniversity', password= bcrypt.generate_password_hash('testpassword'))
+    person = Person(user_name='testuser', email = 'testemail@gmail.com', bio = 'testbio', university = 'testuniversity', password= bcrypt.generate_password_hash('testpassword').decode('utf-8'))
     db.session.add(person)
     db.session.commit()
 

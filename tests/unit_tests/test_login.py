@@ -4,7 +4,7 @@ from src.models import db, Person
 
 def test_login_route_happy_route(test_client: FlaskClient):
     # Create a user in the database
-    person = Person(user_name='testuser', email = 'testemail@gmail.com', bio = 'testbio', university = 'testuniversity', password= bcrypt.generate_password_hash('testpassword').decode())
+    person = Person(user_name='testuser', email = 'testemail@gmail.com', bio = 'testbio', university = 'testuniversity', password= bcrypt.generate_password_hash('testpassword').decode('utf-8'))
     db.session.add(person)
     db.session.commit()
 
