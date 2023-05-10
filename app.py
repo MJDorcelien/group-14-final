@@ -182,6 +182,7 @@ def delete_specific_message(post_id):
 
 @socketio.on("connect")
 def connect(auth):
+    # adding comment to see if it's tracking
     user=rooms["user"]
     course=rooms["course"]
     join_room(course.section_id)
@@ -194,6 +195,7 @@ def disconnect():
     course=rooms["course"]
     leave_room(course.section_id)
 
+# takes in new message and adds to database
 @socketio.on("new_message")
 def handle_new_message(message):
     print(f"New message: {message}")
