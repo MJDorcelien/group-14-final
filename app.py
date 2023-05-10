@@ -12,7 +12,7 @@ from src.project_repository import project_repository_singleton
 from src.models import db
 
 app = Flask(__name__)
-# socketio=SocketIO(app)
+socketio=SocketIO(app)
 
 # if __name__ == "__main__":
     # socketio.run(app, debug=True)
