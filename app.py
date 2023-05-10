@@ -1,7 +1,7 @@
 from flask import Flask, abort, redirect, session, render_template, request, url_for
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
-from src.models import db, Person,Post
+from src.models import db, Person,Post,Section
 import bcrypt
 import os
 from flask_socketio import SocketIO, leave_room,join_room,emit
@@ -137,14 +137,14 @@ def view_all_courses():
     # person=session['user']
     # person_id=person['person_id']
     # sections=project_repository_singleton.get_user_courses(person_id)
-    sections=project_repository_singleton.get_user_courses(7) # need to change to the id of the auth
+    sections=project_repository_singleton.get_user_courses(4) # need to change to the id of the auth
     return render_template('get_all_courses.html', courses=sections)
 
 @app.get('/courses/<int:section_id>')
 def view_specific_course(section_id):
     # person=session['user']
     # person_id=person['person_id']
-    person_id=7 # this needs to get the person_id from the user
+    person_id=4 # this needs to get the person_id from the user
     courses=project_repository_singleton.get_user_courses(person_id)
     posts=project_repository_singleton.get_all_posts()
     course=project_repository_singleton.get_sections_by_id(section_id)
