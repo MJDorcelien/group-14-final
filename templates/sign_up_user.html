@@ -1,35 +1,48 @@
 {% extends '_layout.html' %}
-
 {% block head %}
-
 <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css_files/loginstyle.css') }}">
-
 <!--For Google Fonts Raleway Regular-->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Raleway&display=swap" rel="stylesheet">
-
 {% endblock %}
-
 {% block title %}LogIn | SignUp{% endblock %}
-
 {% block body %}
     <div class = "parentcontainer text-center">
     <div class="logincontainer">
-        <form action = "/login" method = POST>
+        <form action = "/signup" method = POST>
     
             <!--Page Heading-->
-            <div class = "login_welcome"><h1 class = h1_login style = "color: white; font-family: Raleway, sans-serif">Sign Up To Enlighten</h1></div>
+            <div class = "login_welcome"><h1 class = h1_login style = "color: white; font-family: Raleway, sans-serif; font-size: xx-large;">Sign Up To Enlighten</h1></div>
                 <!--Username Label and Input Group-->
-                <label class = login_label for="username" style = "color: white; font-family: Raleway, sans-serif;">Username</label>
+                <label class = login_label for="username" style = "color: white; font-family: Raleway, sans-serif; font-size: medium;">Username</label>
                 <div class="input-group mb-3">
-                    <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon2">
+                    <input type="text" class="form-control" name = "username" id = "username" placeholder="Username" aria-label="Username" aria-describedby="basic-addon2">
                 </div>
         
                 <!--Password Label and Input Group-->
-                <label for="password" style = "color: white; font-family: Raleway, sans-serif;">Password</label>
+                <label for="password" style = "color: white; font-family: Raleway, sans-serif; font-size: medium;">Password</label>
                 <div class="input-group mb-3">
-                    <input type="password" class="form-control" placeholder="Password" aria-label="Password" aria-describedby="basic-addon2">
+                    <input type="password" class="form-control" name = "password" id = "password" placeholder="Password" aria-label="Password" aria-describedby="basic-addon2">
+                </div>
+            
+                <!--Email Label and Input Group-->
+                <label for="email" style = "color: white; font-family: Raleway, sans-serif; font-size: medium;">Email</label>
+                <div class="input-group mb-3">
+                    <input type="email" class="form-control" name = "email" id = "email" placeholder="Email" aria-label="Email" aria-describedby="basic-addon2">
+                </div>
+
+                <label for="select" style = "color: white; font-family: Raleway, sans-serif; font-size: medium;">Join Your University</label>
+                <select class = "form-select bg-warning" name = "your_university" id = "your_university" aria-label = "Select">
+                    <option selected disabled>Join Your University</option>
+                    <option value="UNC Charlotte">UNC Charlotte</option>
+                    <option disabled>More Coming Soon</option>
+                </select>
+
+                <!--Bio Label and Input Group-->
+                <label for="bio" style = "color: white; font-family: Raleway, sans-serif; font-size: medium;">Enter A Sentence For Your Bio</label>
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" name = "bio" id = "bio" placeholder="Bio" aria-label="Bio" aria-describedby="basic-addon2">
                 </div>
             <div class = buttons>
 

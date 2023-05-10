@@ -38,5 +38,6 @@ class ProjectRepository:
     
     def get_sections_by_id(self, section_id):
         return Section.query.filter_by(section_id=section_id).first()
-    
+
 project_repository_singleton = ProjectRepository()
+    
