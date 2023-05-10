@@ -35,7 +35,9 @@ def index():
 
 @app.get('/courses')
 def view_all_courses():
-    sections=project_repository_singleton.get_user_courses(7) # need to change to the id of the auth
+    person=session['user']
+    person_id=person['person_id']
+    sections=project_repository_singleton.get_user_courses(person_id)
     return render_template('get_all_courses.html', courses=sections)
 
 @app.get('/join')
@@ -146,7 +148,8 @@ def logout():
 
 @app.get('/courses/<int:section_id>')
 def view_specific_course(section_id):
-    person_id=7 # this needs to get the person_id from the user
+    person=session['user']
+    person_id=person['person_id']
     courses=project_repository_singleton.get_user_courses(person_id)
     posts=project_repository_singleton.get_all_posts()
     course=project_repository_singleton.get_sections_by_id(section_id)
