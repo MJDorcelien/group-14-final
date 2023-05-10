@@ -1,15 +1,14 @@
 from flask import Flask, abort, redirect, session, render_template, request, url_for
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
-from src.models import db, Person
+from src.models import db, Person,Post,Section
 from security import bcrypt
 import os
-from flask_socketio import SocketIO
+from flask_socketio import SocketIO, leave_room,join_room,emit
+import datetime
+from src.project_repository import project_repository_singleton
 
 load_dotenv()
-
-from src.project_repository import project_repository_singleton
-from src.models import db
 
 app = Flask(__name__)
 socketio=SocketIO(app)
@@ -32,13 +31,6 @@ app.config['SQLALCHEMY_ECHO']=True
 @app.get('/')
 def index():
     return render_template('index.html')
-
-@app.get('/courses')
-def view_all_courses():
-    person=session['user']
-    person_id=person['person_id']
-    sections=project_repository_singleton.get_user_courses(person_id)
-    return render_template('get_all_courses.html', courses=sections)
 
 @app.get('/join')
 def view_join_courses():
@@ -81,7 +73,8 @@ def view_user_settings():
         abort(401)
     return render_template('get_user_settings.html')
 
-@app.route('/login', methods=['POST'])
+rooms ={}
+@app.post('/login')
 def login():
     # If user already logged in, redirect them to the "all courses" homepage view
     if 'user' in session:
@@ -144,7 +137,13 @@ def signup():
 def logout():
     del session['user']
     return redirect('/')
-    
+
+@app.get('/courses')
+def view_all_courses():
+    person=session['user']
+    person_id=person['person_id']
+    sections=project_repository_singleton.get_user_courses(person_id)
+    return render_template('get_all_courses.html', courses=sections)
 
 @app.get('/courses/<int:section_id>')
 def view_specific_course(section_id):
@@ -154,6 +153,62 @@ def view_specific_course(section_id):
     posts=project_repository_singleton.get_all_posts()
     course=project_repository_singleton.get_sections_by_id(section_id)
     users=project_repository_singleton.get_all_user()
-    return render_template('get_courses_chat.html',courses=courses,section=section_id,posts=posts,exam=course,users=users)
+    user=project_repository_singleton.get_user_by_id(person_id)
 
+    list_posts=project_repository_singleton.get_all_posts()
+    for i in range(len(list_posts)):
+        for j in range(i+1,len(list_posts)):
+            if list_posts[i].post_id > list_posts[j].post_id:
+                list_posts[i], list_posts[j] = list_posts[j], list_posts[i]
 
+    person=user.user_name
+    rooms["user"]=user
+    rooms["course"]=course
+    return render_template('get_courses_chat.html',list_posts=list_posts,courses=courses,section=section_id,posts=posts,exam=course,users=users,person_id=person_id,person=person)
+
+@app.post('/courses/<int:post_id>/messages/edit')
+def edit_specific_message(post_id):
+    post=project_repository_singleton.get_post_by_id(post_id)
+    print(post)
+    new_message=request.form.get('message')
+    project_repository_singleton.update_post(post_id,new_message)
+    print(post)
+
+    return redirect(f'/courses/{post.course}')
+
+@app.post('/courses/<int:post_id>/messages/delete')
+def delete_specific_message(post_id):
+    post=project_repository_singleton.get_post_by_id(post_id)
+    section=post.course
+    project_repository_singleton.delete_post(post_id)
+    
+    return redirect(f'/courses/{section}')
+
+@socketio.on("connect")
+def connect(auth):
+    # adding comment to see if it's tracking
+    user=rooms["user"]
+    course=rooms["course"]
+    join_room(course.section_id)
+    emit({"name": user.user_name,"message": "has entered the room"}, broadcast=True)
+    print(f"{user.user_name} has joined {course.title} {course.section_id}")
+
+@socketio.on("disconnect")
+def disconnect():
+    user=rooms["user"]
+    course=rooms["course"]
+    leave_room(course.section_id)
+
+# takes in new message and adds to database
+@socketio.on("new_message")
+def handle_new_message(message):
+    print(f"New message: {message}")
+    user=rooms["user"]
+    course=rooms["course"]
+    date=datetime.datetime.now()
+
+    post=Post(user.person_id,course.section_id,date,message)
+    db.session.add(post)
+    db.session.commit()
+
+    emit("chat",{"message": message,"username": user.user_name},broadcast=True)

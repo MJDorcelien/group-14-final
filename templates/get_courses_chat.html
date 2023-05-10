@@ -2,13 +2,15 @@
 
 {% block title %}Courses Chat{% endblock %}
 
+{% block head %}
+{% endblock %}
+
 {% block body %}
     {% for course in courses %}
-    {% if section == course.section_id %}
-    <h2>{{exam.title}} Chat</h2>
-    {% endif %}
+        {% if section == course.section_id %}
+            <h2>{{exam.title}} Chat</h2>
+        {% endif %}
     {% endfor %}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
 
     <div class="row text-white bg-dark-subtle">
         <div class="col-2">
@@ -30,20 +32,103 @@
                 {% endif %}
             {% endfor %}
         </div>
-        <div class="col-7" id="messages">
-            {% for post in posts %}
-                {% if section == post.course %}
-                    {% for user in users %}
-                        {% if user.person_id == post.poster %}
-                            <p>{{user.user_name}}: {{post.content}}</p>
-                        {% endif %}
-                    {% endfor %}
-                {% endif %}
-            {% endfor %}
-            <div class="inputs">
-                <input type="text" rows="3" placeholder="Message" name="message">
-                <button name="send" id="send-btn" onClick="sendMessage()">Send</button>
+        <div class="col-7 p-2" id="messages">
+            {% if exam.main == True %}
+            <h3>{{exam.title}} Course Chat</h3>
+            {% else %}
+            <h3>{{exam.title}} Section Chat</h3>
+            {% endif %}
+            <div id="individual" class="container h-75 p-2 overflow-auto bg-dark rounded ">
+                {% for post in list_posts %}
+                    {% if section == post.course %}
+                        {% for user in users %}
+                            {% if user.person_id == post.poster %}
+                                {% if person_id == user.person_id %}
+                                    <p>
+                                        <div class="btn-group" role="group" aria-label="Basic example">
+                                            {{user.user_name}} {{post.post_id}}: {{post.content}}
+                                            <form action="/courses/{{post.post_id}}/messages/edit" method="post">
+                                                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="{{post.content}}">Edit</button>
+
+                                                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h1 class="modal-title fs-5" id="exampleModalLabel">Edit message</h1>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <form>
+                                                                    <div class="mb-3">
+                                                                        <input type="text" class="form-control" id="recipient-name">
+                                                                        <label for="recipient-name" class="col-form-label">Old Message:</label>
+                                                                    </div>
+                                                                    <div class="mb-3">
+                                                                        <textarea class="form-control" name="message" id="message-text"></textarea>
+                                                                        <label for="message-text" class="col-form-label">New Message:</label>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                                <button type="submit" class="btn btn-primary">Edit Message</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                            <form action="/courses/{{post.post_id}}/messages/delete" method="post">
+                                                <button type="submit" class="btn-sm btn-danger">Delete</button>
+                                            </form>
+                                        </div>
+                                    </p>
+                                {% else %}
+                                    <p>{{user.user_name}}: {{post.content}}</p>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+            <div class="input-group mb-3">
+                <input type="text" rows="3" class="form-control" placeholder="Message" name="message" id="message">
+                <button name="send" id="send-btn" class="btn btn-primary" onClick="sendMessage()">Send</button>
             </div>
         </div>
     </div>
+    <script>
+        var socketio=io()
+
+        const sendMessage = () => {
+            let message = document.getElementById("message").value
+            socketio.emit("new_message",message)
+            document.getElementById("message").value=""
+        }
+
+        socketio.on("chat", function(data){
+            let ul=document.getElementById("individual")
+            let li=document.createElement("p")
+            li.appendChild(document.createTextNode(data["username"]+": "+data["message"]))
+            ul.appendChild(li)
+        })
+
+        const exampleModal = document.getElementById('exampleModal')
+        if (exampleModal) {
+        exampleModal.addEventListener('show.bs.modal', event => {
+            // Button that triggered the modal
+            const button = event.relatedTarget
+            // Extract info from data-bs-* attributes
+            const recipient = button.getAttribute('data-bs-whatever')
+            // If necessary, you could initiate an Ajax request here
+            // and then do the updating in a callback.
+
+            // Update the modal's content.
+            const modalTitle = exampleModal.querySelector('.modal-title')
+            const modalBodyInput = exampleModal.querySelector('.modal-body input')
+
+            modalTitle.textContent = `New message to ${recipient}`
+            modalBodyInput.value = recipient
+        })
+        }
+    </script>
 {% endblock %}
