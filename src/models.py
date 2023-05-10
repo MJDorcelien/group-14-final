@@ -19,11 +19,12 @@ user_following=db.Table(
 )
 
 class Person(db.Model):
+    __tablename__ = 'person'
     person_id=db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_name=db.Column(db.String(50), nullable=False)
     bio=db.Column(db.String(255), nullable=False)
-    email=db.Column(db.String(255), nullable=False)
-    password=db.Column(db.String(50), nullable=False)
+    email=db.Column(db.String(50), nullable=False)
+    password=db.Column(db.String(255), nullable=False)
     university=db.Column(db.String(50), nullable=False)
     course=db.relationship('Section',backref='courses',secondary=person_section,lazy=True)
 
@@ -44,6 +45,7 @@ class Section(db.Model):
     university=db.Column(db.String(50), nullable=False)
     course=db.Column(db.String(50), nullable=False)
     main=db.Column(db.Boolean, nullable=False)
+
 
     def __init__(self,title:str,description:str,university:str,course:str,main:bool) -> None:
         self.title=title
@@ -72,3 +74,5 @@ class Post(db.Model):
 
     def __repr__(self) -> str:
         return f'Post(id={self.post_id},poster={self.poster}, course={self.course}, date={self.date_time}, content={self.content}, parent={self.parent_post})'
+    
+

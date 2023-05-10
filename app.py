@@ -2,7 +2,7 @@ from flask import Flask, abort, redirect, session, render_template, request, url
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
 from src.models import db, Person,Post,Section
-import bcrypt
+from security import bcrypt
 import os
 from flask_socketio import SocketIO, leave_room,join_room,emit
 import datetime
@@ -12,9 +12,6 @@ load_dotenv()
 
 app = Flask(__name__)
 socketio=SocketIO(app)
-
-if __name__ == "__main__":
-    socketio.run(app, debug=True)
 
 db_user=os.getenv('DB_USER')
 db_pass=os.getenv('DB_PASS')
@@ -27,6 +24,7 @@ app.config['SQLALCHEMY_DATABASE_URI']\
 app.secret_key = os.getenv('APP_SECRET')
 
 db.init_app(app)
+bcrypt.init_app(app)
 
 app.config['SQLALCHEMY_ECHO']=True
 
@@ -38,7 +36,7 @@ def index():
 def view_join_courses():
     if 'user' not in session:
         return "You must be logged in to join a course. Login or Signup to join."
-    return render_template('join_courses.html')
+    return render_template('join_university.html')
 
 @app.post('/join')
 def add_courses():
@@ -54,7 +52,7 @@ def view_all_friends():
 @app.get('/profile')
 def view_user_profile():
     if 'user' not in session:
-        abort(401)
+        return "You must be logged in to view this page. Login or Signup to view"
     return render_template('get_user_profile.html')
 
 @app.get('/login')
@@ -82,69 +80,75 @@ def login():
     if 'user' in session:
         redirect('/courses')
 
-    username = request.form['username']
-    password = request.form['password'].encode('utf-8')
+    username = request.form.get('username')
+    password = request.form.get('password')
     # Retrieve the user with the given username from the database
-    user = Person.query.filter_by(username=username).first()
+    user = Person.query.filter_by(user_name=username).first()
 
-    if user is None:
-        return 'Invalid username or password'
+    if not user:
+        #return redirect('/login')
+        return redirect('/login')
 
     # Use bcrypt to check if the provided password matches the stored hashed password
-    if bcrypt.checkpw(password, user.password.encode('utf-8')):
+    if not bcrypt.check_password_hash(user.password,password):
 
-        # Create user session that stores username
-        person_id = Person.select(person_id).filter_by(username=username, password=password).first()
-        session['user'] = {
-            'username' : username,
-            'person_id' : person_id
-            }
-
-        # Redirects user to "all courses" page after login 
-        return redirect('/courses') 
-    else:
-        return 'Invalid username or password'
+        # return redirect('/login')
+        return redirect('/login') 
     
-    return render_template('index.html')
+    # Create user session that stores username
+    user=project_repository_singleton.get_user_by_name(username)
+    person_id=user.person_id
+    session['user'] = {
+        'username' : username,
+        'person_id' : person_id
+        }
+    
+    # Redirects user to "all courses" page after login 
+    return redirect('/')
 
-@app.route('/signup', methods=['POST'])
+@app.post('/signup')
 def signup():
-    username = request.form['username']
-    password = request.form['password'].encode('utf-8')
+    username = request.form.get('username')
+    password = request.form.get('password').encode('utf-8')
+    biography = request.form.get('bio')
+    email_address = request.form.get('email')
+    your_university = request.form.get('university')
+
+    if not username or not password or not biography or not email_address or not your_university:
+        abort(400)
 
     # Hash the password using bcrypt
-    hashed_password = bcrypt.hashpw(password, bcrypt.gensalt())
+    hashed_password = bcrypt.generate_password_hash(password).decode()
 
     # Create a new user with the hashed password
-    user = Person(username=username, password=hashed_password)
+    user = project_repository_singleton.create_user(user_name = username, bio = biography, email = email_address, password = hashed_password, university = your_university)
 
     # Try to add the new user to the database
     try:
         db.session.add(user)
         db.session.commit()
-        return 'User created successfully'
+        return redirect('/')
     except:
         db.session.rollback()
-        return 'User already exists'
+        return redirect('/signup')
     
+# logs out the user
 @app.post('/logout')
 def logout():
     del session['user']
     return redirect('/')
-    
+
 @app.get('/courses')
 def view_all_courses():
-    # person=session['user']
-    # person_id=person['person_id']
-    # sections=project_repository_singleton.get_user_courses(person_id)
-    sections=project_repository_singleton.get_user_courses(4) # need to change to the id of the auth
+    person=session['user']
+    person_id=person['person_id']
+    sections=project_repository_singleton.get_user_courses(person_id)
     return render_template('get_all_courses.html', courses=sections)
 
 @app.get('/courses/<int:section_id>')
 def view_specific_course(section_id):
-    # person=session['user']
-    # person_id=person['person_id']
-    person_id=4 # this needs to get the person_id from the user
+    person=session['user']
+    person_id=person['person_id']
     courses=project_repository_singleton.get_user_courses(person_id)
     posts=project_repository_singleton.get_all_posts()
     course=project_repository_singleton.get_sections_by_id(section_id)
