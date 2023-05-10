@@ -134,10 +134,10 @@ def signup():
     try:
         db.session.add(user)
         db.session.commit()
-        return 'User created successfully'
+        return redirect('/')
     except:
         db.session.rollback()
-        return 'User already exists'
+        return redirect('/signup')
     
 # logs out the user
 @app.post('/logout')
