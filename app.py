@@ -14,9 +14,6 @@ from src.models import db
 app = Flask(__name__)
 socketio=SocketIO(app)
 
-# if __name__ == "__main__":
-    # socketio.run(app, debug=True)
-
 db_user=os.getenv('DB_USER')
 db_pass=os.getenv('DB_PASS')
 db_host=os.getenv('DB_HOST')
@@ -45,7 +42,7 @@ def view_all_courses():
 def view_join_courses():
     if 'user' not in session:
         return "You must be logged in to join a course. Login or Signup to join."
-    return render_template('join_courses.html')
+    return render_template('join_university.html')
 
 @app.post('/join')
 def add_courses():
@@ -88,32 +85,33 @@ def login():
     if 'user' in session:
         redirect('/courses')
 
-    username = request.form['username']
-    password = request.form['password'].encode('utf-8')
+    username = request.form.get('username')
+    password = request.form.get('password')
     # Retrieve the user with the given username from the database
-    user = Person.query.filter_by(username=username).first()
+    user = Person.query.filter_by(user_name=username).first()
 
     if not user:
         #return redirect('/login')
-        return "Invalid Username or Password"
+        return redirect('/login')
 
     # Use bcrypt to check if the provided password matches the stored hashed password
-    if bcrypt.checkpw(password, user.password.encode('utf-8')):
+    if not bcrypt.check_password_hash(user.password,password):
 
-        # Create user session that stores username
-        person_id = Person.select(person_id).filter_by(username=username, password=password).first()
-        session['user'] = {
-            'username' : username,
-            'person_id' : person_id
-            }
-
-        # Redirects user to "all courses" page after login 
-        return redirect('/courses') 
-    else:
         # return redirect('/login')
-        return "Invalid Username or Password"
+        return redirect('/login') 
+    
+    # Create user session that stores username
+    user=project_repository_singleton.get_user_by_name(username)
+    person_id=user.person_id
+    session['user'] = {
+        'username' : username,
+        'person_id' : person_id
+        }
+    
+    # Redirects user to "all courses" page after login 
+    return redirect('/')
 
-@app.route('/signup', methods=['POST'])
+@app.post('/signup')
 def signup():
     username = request.form.get('username')
     password = request.form.get('password').encode('utf-8')
@@ -127,9 +125,6 @@ def signup():
     # Hash the password using bcrypt
     hashed_password = bcrypt.generate_password_hash(password).decode()
 
-
-    # Question For TA: Is this working correctly with sessions? How can I tell?
-    # Do these variables match those in the models schema?
     # Create a new user with the hashed password
     user = project_repository_singleton.create_user(user_name = username, bio = biography, email = email_address, password = hashed_password, university = your_university)
 
@@ -141,6 +136,7 @@ def signup():
     except:
         db.session.rollback()
         return 'User already exists'
+    
 # logs out the user
 @app.post('/logout')
 def logout():

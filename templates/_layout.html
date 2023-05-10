@@ -29,9 +29,11 @@
           <li class="nav-item">
             <a class="nav-link active text-white" aria-current="page" href="/">Home</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link text-white" href="/courses">Courses</a>
-          </li>
+          {% if session.user %}
+            <li class="nav-item">
+              <a class="nav-link text-white" href="/courses">Courses</a>
+            </li>
+          {% endif %}
           <li class="nav-item">
             <a class="nav-link text-white" href="/join">Search/Join</a>
           </li>

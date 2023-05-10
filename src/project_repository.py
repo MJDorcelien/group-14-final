@@ -23,6 +23,14 @@ class ProjectRepository:
     def get_user_by_id(self, person_id):
         return Person.query.filter_by(person_id=person_id).first()
     
+    def get_user_by_name(self, username):
+        person=Person.query.filter_by(user_name=username).first()
+        users=Person.query.all()
+        for user in users:
+            if user.user_name==person.user_name and user.password==person.password:
+                person=user
+        return user
+    
     # methods for the Post Table
     def get_post_by_id(self, post_id):
         return  Post.query.filter_by(post_id=post_id).first()

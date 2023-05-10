@@ -10,7 +10,7 @@
 {% block body %}
     <div class = "parentcontainer text-center">
     <div class="logincontainer">
-        <form action = "/signup" method = POST>
+        <form action = "/signup" method = "post">
     
             <!--Page Heading-->
             <div class = "login_welcome"><h1 class = h1_login style = "color: white; font-family: Raleway, sans-serif; font-size: xx-large;">Sign Up To Enlighten</h1></div>
@@ -33,8 +33,8 @@
                 </div>
 
                 <label for="select" style = "color: white; font-family: Raleway, sans-serif; font-size: medium;">Join Your University</label>
-                <select class = "form-select bg-warning" name = "your_university" id = "your_university" aria-label = "Select">
-                    <option selected disabled>Join Your University</option>
+                <select class = "form-select bg-warning" name = "university" id = "your_university" aria-label = "Select">
+                    <option disabled>Join Your University</option>
                     <option value="UNC Charlotte">UNC Charlotte</option>
                     <option disabled>More Coming Soon</option>
                 </select>
@@ -50,7 +50,7 @@
                 <p4> Have An Account <a href="/login" style = "color:goldenrod;">Log In</a></p>
             </div>      
                 <!--Sign Up Button-->
-                <button type="button" class="btn btn-warning" value = "signup" name = "button" >Sign Up</button>
+                <button type="submit" class="btn btn-warning" value = "signup" name = "button" >Sign Up</button>
             </div>
     </div>
     
