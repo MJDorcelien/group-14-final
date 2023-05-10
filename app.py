@@ -134,11 +134,16 @@ def logout():
     
 @app.get('/courses')
 def view_all_courses():
+    # person=session['user']
+    # person_id=person['person_id']
+    # sections=project_repository_singleton.get_user_courses(person_id)
     sections=project_repository_singleton.get_user_courses(7) # need to change to the id of the auth
     return render_template('get_all_courses.html', courses=sections)
 
 @app.get('/courses/<int:section_id>')
 def view_specific_course(section_id):
+    # person=session['user']
+    # person_id=person['person_id']
     person_id=7 # this needs to get the person_id from the user
     courses=project_repository_singleton.get_user_courses(person_id)
     posts=project_repository_singleton.get_all_posts()
@@ -160,8 +165,10 @@ def view_specific_course(section_id):
 @app.post('/courses/<int:post_id>/messages/edit')
 def edit_specific_message(post_id):
     post=project_repository_singleton.get_post_by_id(post_id)
+    print(post)
     new_message=request.form.get('message')
     project_repository_singleton.update_post(post_id,new_message)
+    print(post)
 
     return redirect(f'/courses/{post.course}')
 
