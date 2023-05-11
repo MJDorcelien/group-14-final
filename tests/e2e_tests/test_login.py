@@ -46,7 +46,7 @@ def test_page_contains_login_button(test_client: FlaskClient):
     response = test_client.get("/login")
 
     # Check that the response contains a button with the expected text
-    assert "<button type=\"button\" class=\"btn btn-warning\" value = \"login\" name = \"button\">Log In</button>" in response.data.decode("utf-8")
+    assert "<button type=\"submit\" class=\"btn btn-warning\" value = \"login\" name = \"button\">Log In</button>" in response.data.decode("utf-8")
 
 
 def test_page_contains_signup_link(test_client: FlaskClient):

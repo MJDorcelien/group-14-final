@@ -165,7 +165,6 @@ def signup():
         db.session.commit()
         return redirect('/')
     except:
-        db.session.rollback()
         return redirect('/signup')
     
 # logs out the user
