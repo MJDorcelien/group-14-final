@@ -36,7 +36,7 @@ def index():
     return render_template('index.html')
 
 @app.get('/join')
-def view_join_courses(): 
+def view_join_courses():
     if 'user' not in session:
         return redirect('/login')
 
@@ -74,7 +74,7 @@ def add_courses():
 
         id = session['user']['person_id']
         user = project_repository_singleton.get_user_by_id(id)
-        section = Section.query.filter_by(course=made_class).first()
+        section = project_repository_singleton.get_sections_by_id(made_class.section_id)
         user.course.append(section)
         db.session.add(user)
         db.session.commit()
