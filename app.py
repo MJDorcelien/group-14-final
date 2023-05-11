@@ -48,10 +48,9 @@ def view_join_courses():
     db.session.add(section2)
     db.session.commit()
 
-    prsn_sec =person_section(devon.person_id, section.section_id)
-    prsn_sec2=person_section(devon.person_id, section2.section_id)
-    db.session.add(prsn_sec)
-    db.session.add(prsn_sec2)
+    devon.course.append(section)
+    devon.course.append(section2)
+    db.session.add(devon)
     db.session.commit()
 
     session['user'] = {

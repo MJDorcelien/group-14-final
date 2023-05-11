@@ -1,0 +1,49 @@
+{% extends '_layout.html' %}
+
+{% block title %}Join Course/Section{% endblock %}
+
+{% block body %}
+
+{% if session.user %}
+<div class="container text-center">
+    <div class="row">
+        <div class="col-8 justify-content-center">
+            <div class="text-bg-secondary p-3" class="position-absolute top-50 start-50 translate-middle" style="background-color:#2C2F33;">
+                <p style="font-size: xx-large; text-align: center; margin-bottom:25px;">Join a <strong>course</strong></p>
+                <div class="input-group input-group-sm" style="width:75%">
+                    <form action="/join" method="post">
+                        <input type="text" class="form-control" id="join-class" class="justify-content-center" aria-describedby="inputGroup-sizing-sm" placeholder="ITSC 3155 or MATH 1246">
+                        <span class="input-group-text" id="inputGroup-sizing-sm" >Join</span>
+                    </form>
+                    {% with messages = get_flashed_messages(with_categories=True) %}
+                    {% if messages %}
+                    <div class="row">
+                        <div class="col-md-4"></div>
+                        <div class="col-md-4">
+                          {% for category, message in messages %}
+                          <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                           {{message}}
+                           <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                          </div>
+                          {% endfor %}
+                        </div>
+                        <div class="col-md-4"></div>
+                      </div>
+                    {% endif %}
+                    {% endwith %}
+                </div>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="text-bg-secondary p-3" class="position-absolute top-50 start-50 translate-middle" style="background-color:#2C2F33;">
+                <p style="font-size:xx-large; text-align:center;">Your classes</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+
+
+{% endif %}
+
+{% endblock %}
