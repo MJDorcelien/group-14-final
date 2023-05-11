@@ -1,7 +1,7 @@
-from flask import Flask, abort, redirect, session, render_template, request, url_for
+from flask import Flask, abort, redirect, session, render_template, request, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from dotenv import load_dotenv
-from src.models import db, Person,Post,Section
+from src.models import db, Person, Section, person_section,Post,Section
 from security import bcrypt
 import os
 from flask_socketio import SocketIO, leave_room,join_room,emit
@@ -9,6 +9,9 @@ import datetime
 from src.project_repository import project_repository_singleton
 
 load_dotenv()
+
+from src.project_repository import project_repository_singleton
+from src.models import db, Section
 
 app = Flask(__name__)
 socketio=SocketIO(app)
@@ -34,14 +37,68 @@ def index():
 
 @app.get('/join')
 def view_join_courses():
+    # Hard coded classes to test some stuff
+#     devon = Person('dev123', 'hello world', "dev@hotmail.com", 'abc123', 'UNCC')
+#     db.session.add(devon)
+#     db.session.commit()
+
+#     section=Section('Calculus', "math sux", 'UNCC', 'MATH 1241', True)
+#     section2=Section('SWE', 'code an app for fun', 'UNCC', 'ITSC 3155', True)
+#     db.session.add(section)
+#     db.session.add(section2)
+#     db.session.commit()
+
+#     devon.course.append(section)
+#     devon.course.append(section2)
+#     db.session.add(devon)
+#     db.session.commit()
+
+#     session['user'] = {
+#         'username' : 'dev123',
+#         'person_id' : 1
+#     }
+    
     if 'user' not in session:
-        return "You must be logged in to join a course. Login or Signup to join."
-    return render_template('join_university.html')
+        return redirect('/login')
+
+    return render_template('join_courses.html')
 
 @app.post('/join')
 def add_courses():
-    # Will be implemented 
-    pass
+    # Get info from form
+    class_to_join = request.form["join-class"]
+    
+    # Test to see if the class they created is already a class
+    is_class = Section.query.filter_by(course=class_to_join).first()
+    
+    # If it already exists, add the user to the class
+    if is_class:
+        id = session['user']['person_id']
+        section_id = Section.select(section_id).filter_by(course=class_to_join).first()
+        prsn_sec = person_section(id, section_id)
+        db.session.add(prsn_sec)
+        db.session.commit()
+        flash('Join class successful', 'success')
+        return redirect("/join")
+
+    #If it doesnt already exist, create the class using some default values (which can be edited later), and add the user to it
+    if not is_class:
+        made_class = Section(class_to_join, "Default Description", "UNCC", class_to_join, True)
+        db.session.add(made_class)
+        db.session.commit()
+
+        id = session['user']['person_id']
+        section_id = Section.select(section_id).filter_by(course=class_to_join).first()
+        prsn_sec = person_section(id, section_id)
+        db.session.add(prsn_sec)
+        db.session.commit()
+        flash('Create and join class successful', 'success')
+        return redirect("/join")
+    
+    # If user cannot join class, produce error message!
+    else:
+        flash('Something went wrong. Please double check your course code and try again', 'danger')
+        return redirect("/join")
 
 @app.get('/friends')
 def view_all_friends():
