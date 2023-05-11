@@ -56,7 +56,7 @@ def test_signup_page_contains_login_link(test_client: FlaskClient):
     response = test_client.get("/signup")
 
     # Check that the response contains a link with the expected text
-    assert '<p4>Have An Account<a href=\"/login\" style = \"color:goldenrod;\">Log In</a></p>' in response.data.decode("utf-8")
+    assert '<p4>Have An Account <a href=\"/login\" style = \"color:goldenrod;\">Log In</a></p>' in response.data.decode("utf-8")
 
 def test_email_input_field(test_client: FlaskClient):
     # Make a request to the sign up page
