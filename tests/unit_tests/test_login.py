@@ -16,7 +16,7 @@ def test_login_route_happy_route(test_client: FlaskClient):
 
     # Check that the user was redirected to the home page
     assert response.headers["Location"] == "/"
-
+    
 
 def test_login_route_unhappy_route(test_client: FlaskClient):
     # Make a request to the login page with invalid credentials
