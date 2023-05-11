@@ -140,7 +140,7 @@ def login():
         }
     
     # Redirects user to "all courses" page after login 
-    return redirect('/')
+    return redirect('/courses')
 
 @app.post('/signup')
 def signup():
@@ -163,7 +163,12 @@ def signup():
     try:
         db.session.add(user)
         db.session.commit()
-        return redirect('/')
+
+        session['user'] = {
+        'username' : username,
+        'person_id' : user.person_id
+        }
+        return redirect('/courses')
     except:
         db.session.rollback()
         return redirect('/signup')
@@ -207,8 +212,10 @@ def view_specific_course(section_id):
 @app.get('/courses/<int:post_id>/messages/edit')
 def get_edit_specific_post(post_id):
     post=project_repository_singleton.get_post_by_id(post_id)
-    return render_template('edit_posts_form.html', post=post)
+    content=post.content
+    return render_template('edit_posts_form.html', post=post, content=content)
 
+# this is for editing a post
 @app.post('/courses')
 def update_post():
     post_id=request.form.get('post-id')
