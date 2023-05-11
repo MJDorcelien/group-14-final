@@ -25,9 +25,10 @@ class ProjectRepository:
     
     def get_user_by_name(self, user_name) -> Person:
         person=Person.query.filter_by(user_name=user_name).first()
+        
         return person
     
-    # methods for the Post Table
+# methods for the Person Table
     def get_post_by_id(self, post_id) -> Post:
         return  Post.query.filter_by(post_id=post_id).first()
     
@@ -50,7 +51,7 @@ class ProjectRepository:
         db.session.delete(old_post)
         db.session.commit()
     
-    # methods for the Section Table
+#  methods for the Section Table
     def get_all_courses(self):
         courses=Section.query.all()
         return courses

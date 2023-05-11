@@ -1,4 +1,5 @@
 from security import bcrypt
+from flask import session
 from flask.testing import FlaskClient
 from src.models import db, Person
 
@@ -16,6 +17,9 @@ def test_login_route_happy_route(test_client: FlaskClient):
 
     # Check that the user was redirected to the home page
     assert response.headers["Location"] == "/"
+    
+    #Logout user
+    del session['user']
 
 
 def test_login_route_unhappy_route(test_client: FlaskClient):

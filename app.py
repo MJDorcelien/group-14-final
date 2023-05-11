@@ -38,59 +38,64 @@ def index():
 @app.get('/join')
 def view_join_courses():
     # Hard coded classes to test some stuff
-#     devon = Person('dev123', 'hello world', "dev@hotmail.com", 'abc123', 'UNCC')
-#     db.session.add(devon)
-#     db.session.commit()
+    # devon = Person('dev123', 'hello world', "dev@hotmail.com", 'abc123', 'UNCC')
+    # db.session.add(devon)
+    # db.session.commit()
 
-#     section=Section('Calculus', "math sux", 'UNCC', 'MATH 1241', True)
-#     section2=Section('SWE', 'code an app for fun', 'UNCC', 'ITSC 3155', True)
-#     db.session.add(section)
-#     db.session.add(section2)
-#     db.session.commit()
+    # section=Section('Calculus', "math sux", 'UNCC', 'MATH 1241', True)
+    # section2=Section('SWE', 'code an app for fun', 'UNCC', 'ITSC 3155', True)
+    # db.session.add(section)
+    # db.session.add(section2)
+    # db.session.commit()
 
-#     devon.course.append(section)
-#     devon.course.append(section2)
-#     db.session.add(devon)
-#     db.session.commit()
+    # devon.course.append(section)
+    # devon.course.append(section2)
+    # db.session.add(devon)
+    # db.session.commit()
 
-#     session['user'] = {
-#         'username' : 'dev123',
-#         'person_id' : 1
-#     }
+    # session['user'] = {
+    #     'username' : 'dev123',
+    #     'person_id' : 1
+    # }
     
-    if 'user' not in session:
-        return redirect('/login')
+    id = session['user']['person_id']
+    courses = project_repository_singleton.get_user_courses(id)
 
-    return render_template('join_courses.html')
+
+    return render_template('join_courses.html', courses=courses)
 
 @app.post('/join')
 def add_courses():
     # Get info from form
-    class_to_join = request.form["join-class"]
+    class2 = request.form.get('join-class')
+    
     
     # Test to see if the class they created is already a class
-    is_class = Section.query.filter_by(course=class_to_join).first()
+    is_class = Section.query.filter_by(course=class2).first()
     
     # If it already exists, add the user to the class
     if is_class:
         id = session['user']['person_id']
-        section_id = Section.select(section_id).filter_by(course=class_to_join).first()
-        prsn_sec = person_section(id, section_id)
-        db.session.add(prsn_sec)
+        user = project_repository_singleton.get_user_by_id(id)
+        section = Section.query.filter_by(course=class2).first()
+        user.course.append(section)
+        db.session.add(user)
         db.session.commit()
         flash('Join class successful', 'success')
         return redirect("/join")
 
     #If it doesnt already exist, create the class using some default values (which can be edited later), and add the user to it
     if not is_class:
-        made_class = Section(class_to_join, "Default Description", "UNCC", class_to_join, True)
+        #class_to_join = request.form.get('join-class')
+        made_class = Section (class2, "Default Description", "UNCC", class2 , True)
         db.session.add(made_class)
         db.session.commit()
 
         id = session['user']['person_id']
-        section_id = Section.select(section_id).filter_by(course=class_to_join).first()
-        prsn_sec = person_section(id, section_id)
-        db.session.add(prsn_sec)
+        user = project_repository_singleton.get_user_by_id(id)
+        section = Section.query.filter_by(course=made_class).first()
+        user.course.append(section)
+        db.session.add(user)
         db.session.commit()
         flash('Create and join class successful', 'success')
         return redirect("/join")
