@@ -1,5 +1,6 @@
 from flask import Flask, abort, redirect, render_template, request
 from src.models import db, Person, Section, Post
+import datetime
 
 class ProjectRepository:
 
@@ -35,6 +36,13 @@ class ProjectRepository:
         posts= Post.query.all()
         return posts
     
+    def create_post(self, person_id: int, section_id: int, date: datetime, message:str):
+        post=Post(person_id,section_id,date,message)
+        db.session.add(post)
+        db.session.commit()
+
+        return post
+    
     def update_post(self, post_id: int, message:str) -> Post:
         post=Post.query.filter_by(post_id=post_id).first()
         if not post:
@@ -55,7 +63,7 @@ class ProjectRepository:
         courses=Section.query.all()
         return courses
     
-    def get_sections_by_id(self, section_id) -> Section:
+    def get_sections_by_id(self, section_id):
         return Section.query.filter_by(section_id=section_id).first()
 
 project_repository_singleton = ProjectRepository()
