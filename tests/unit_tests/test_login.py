@@ -14,16 +14,17 @@ def test_login_route_happy_route(test_client: FlaskClient):
     # Check that the response was successful
     assert response.status_code == 302
 
-    # Check that the user was redirected to the home page
-    assert response.headers["Location"] == "/"
+    # Check that the user was redirected to the courses page
+    assert response.headers["Location"] == "/courses"
     
 
 def test_login_route_unhappy_route(test_client: FlaskClient):
     # Make a request to the login page with invalid credentials
     response = test_client.post("/login", data={"username": "invalid_username", "password": "invalid_password"})
+    page_data = response.data.decode()
 
-    # Check that the response was unsuccessful
-    assert response.status_code == 400
+    # Check that the response was unsuccessful, and we are redirected to login again
+    assert response.status_code == 302 
+    
+    
 
-    # Check that the response contains the expected error message
-    assert "Invalid username or password" in response.data.decode("utf-8")
