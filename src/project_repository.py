@@ -26,6 +26,7 @@ class ProjectRepository:
     
     def get_user_by_name(self, user_name) -> Person:
         person=Person.query.filter_by(user_name=user_name).first()
+        
         return person
     
     def delete_all_person_section(self) -> None:
@@ -77,7 +78,7 @@ class ProjectRepository:
             db.session.delete(old_post)
             db.session.commit()
     
-    # methods for the Section Table
+#  methods for the Section Table
     def get_all_courses(self):
         courses=Section.query.all()
         return courses
