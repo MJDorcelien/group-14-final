@@ -1,4 +1,3 @@
-
 def test_get_all_courses_empty(test_client):
     resp=test_client.get('/courses')
     resp_data=resp.data.decode('utf-8')
