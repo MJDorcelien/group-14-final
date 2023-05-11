@@ -9,7 +9,7 @@ def test_signup_route_happy_route(test_client: FlaskClient):
     db.session.commit()
 
     # Make a request to the sign up page with valid credentials
-    response = test_client.post("/signup", data={"username": "testuser", "password": "testpassword"})
+    response = test_client.post("/signup", data={"username": "testuser", "password": "testpassword", "email" : 'testemail@gmail.com', "bio":'testbio', 'university':"testuniversity"})
 
     # Check that the response was successful
     assert response.status_code == 302
