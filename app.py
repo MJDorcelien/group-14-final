@@ -36,29 +36,7 @@ def index():
     return render_template('index.html')
 
 @app.get('/join')
-def view_join_courses():
-    # Hard coded classes to test some stuff
-    # devon = Person('dev123', 'hello world', "dev@hotmail.com", 'abc123', 'UNCC')
-    # db.session.add(devon)
-    # db.session.commit()
-
-    # section=Section('Calculus', "math sux", 'UNCC', 'MATH 1241', True)
-    # section2=Section('SWE', 'code an app for fun', 'UNCC', 'ITSC 3155', True)
-    # db.session.add(section)
-    # db.session.add(section2)
-    # db.session.commit()
-
-    # devon.course.append(section)
-    # devon.course.append(section2)
-    # db.session.add(devon)
-    # db.session.commit()
-
-    # session['user'] = {
-    #     'username' : 'dev123',
-    #     'person_id' : 1
-    # }
-    
-     
+def view_join_courses(): 
     if 'user' not in session:
         return redirect('/login')
 
