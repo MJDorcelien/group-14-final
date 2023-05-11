@@ -8,10 +8,12 @@
             <h1 class="text-white text-center p-4" style="font-weight: bold;">Welcome to Enlighten!</h1>
             <h4 class="text-white text-center pb-4 px-4">We make staying in the loop look easy! Talk to your friends from your favorite classes, stay up to date, and get help when you need it.
                 All in one convienent place. Make an account or login to get started. </h4>
-                <div class="text-center">
-                    <a class="btn btn-lg btn-outline-warning mt-3" href="/login">Login</a>
-                    <a class="btn btn-lg btn-outline-warning mt-3" href="/signup">Sign Up</a>
-                </div>
+                {% if not session.user %}
+                    <div class="text-center">
+                        <a class="btn btn-lg btn-outline-warning mt-3" href="/login">Login</a>
+                        <a class="btn btn-lg btn-outline-warning mt-3" href="/signup">Sign Up</a>
+                    </div>
+                {% endif %}
         </div>
     </div>
 {% endblock %}
