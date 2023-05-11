@@ -31,12 +31,17 @@
         <div class="col-4">
             <div class="text-bg-secondary p-3" class="position-absolute top-50 start-50 translate-middle" style="background-color:#2C2F33;">
                 <p style="font-size:xx-large; text-align:center;">Your classes</p>
+                {% if courses %}
                 {% for class in courses %}
                 <div>
-                    <p>{{ class.title }}</p><br>
+                    <p>{{ class.course }}</p><br>
                 </div>
                 {%endfor%}
-
+                {%else%}
+                <div>
+                    <p>No joined classes!</p><br>
+                </div>
+                {%endif%}
             </div>
         </div>
     </div>

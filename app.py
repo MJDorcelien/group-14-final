@@ -36,7 +36,6 @@ def index():
     return render_template('index.html')
 
 @app.get('/join')
-<<<<<<< HEAD
 def view_join_courses():
     # Hard coded classes to test some stuff
     # devon = Person('dev123', 'hello world', "dev@hotmail.com", 'abc123', 'UNCC')
@@ -59,14 +58,12 @@ def view_join_courses():
     #     'person_id' : 1
     # }
     
-    id = session['user']['person_id']
-    courses = project_repository_singleton.get_user_courses(id)
-=======
-def view_join_courses():    
+     
     if 'user' not in session:
         return redirect('/login')
->>>>>>> d3168cad255982867346cbfbb8cfb4eecc10d9c5
 
+    id = session['user']['person_id']
+    courses = project_repository_singleton.get_user_courses(id)  
 
     return render_template('join_courses.html', courses=courses)
 
