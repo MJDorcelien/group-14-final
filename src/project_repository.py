@@ -28,6 +28,16 @@ class ProjectRepository:
         person=Person.query.filter_by(user_name=user_name).first()
         return person
     
+    def delete_all_person_section(self) -> None:
+        users=self.get_all_user()
+        for user in users:
+            courses=self.get_user_courses(user.person_id)
+            if courses:
+                for course in courses:
+                    user.course.remove(self.get_sections_by_id(course.section_id))
+            db.session.add(user)
+            db.session.commit()
+    
     # methods for the Post Table
     def get_post_by_id(self, post_id) -> Post:
         return  Post.query.filter_by(post_id=post_id).first()
@@ -57,6 +67,15 @@ class ProjectRepository:
             raise ValueError(f'post with id {post_id} not found')
         db.session.delete(old_post)
         db.session.commit()
+
+    def delete_all_posts(self) -> None:
+        posts= Post.query.all()
+        for post in posts:
+            old_post=Post.query.filter_by(post_id=post.post_id).first()
+            if not old_post:
+                raise ValueError(f'post with id {post.post_id} not found')
+            db.session.delete(old_post)
+            db.session.commit()
     
     # methods for the Section Table
     def get_all_courses(self):
@@ -65,6 +84,10 @@ class ProjectRepository:
     
     def get_sections_by_id(self, section_id):
         return Section.query.filter_by(section_id=section_id).first()
+    
+    def clear_db(self) -> None:
+            """Clears all movies out of the database, only to be used in tests"""
+            self._db = {}
 
 project_repository_singleton = ProjectRepository()
     
