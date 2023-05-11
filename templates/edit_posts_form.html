@@ -1,0 +1,18 @@
+{% extends '_layout.html' %}
+
+{% block title %}Courses Chat{% endblock %}
+
+{% block head %}
+{% endblock %}
+
+{% block body %}
+    <h1>Edit Post</h1>
+    <form action="/courses" method="post">
+        <input type="hidden" name="post-id" value={{post.post_id}}>
+        <label for="old-message">Old Message:</label>
+        <input type="text" name="old-message" id="old-message" placeholder={{post.content}} disabled>
+        <label for="new-message">New Message:</label>
+        <input type="text" name="new-message" id="new-message" placeholder="Enter your new message here">
+        <button type="submit">Update Message</button>
+    </form>
+{% endblock %}

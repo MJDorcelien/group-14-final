@@ -26,7 +26,7 @@ class Person(db.Model):
     email=db.Column(db.String(50), nullable=False)
     password=db.Column(db.String(255), nullable=False)
     university=db.Column(db.String(50), nullable=False)
-    course=db.relationship('Section',backref='courses',secondary=person_section,lazy=True)
+    course=db.relationship('Section', backref='courses',secondary=person_section,lazy=True)
 
     def __init__(self,user_name:str,bio:str,email:str,password:str,university:str) -> None:
         self.user_name=user_name

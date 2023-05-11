@@ -36,28 +36,7 @@ def index():
     return render_template('index.html')
 
 @app.get('/join')
-def view_join_courses():
-    # Hard coded classes to test some stuff
-#     devon = Person('dev123', 'hello world', "dev@hotmail.com", 'abc123', 'UNCC')
-#     db.session.add(devon)
-#     db.session.commit()
-
-#     section=Section('Calculus', "math sux", 'UNCC', 'MATH 1241', True)
-#     section2=Section('SWE', 'code an app for fun', 'UNCC', 'ITSC 3155', True)
-#     db.session.add(section)
-#     db.session.add(section2)
-#     db.session.commit()
-
-#     devon.course.append(section)
-#     devon.course.append(section2)
-#     db.session.add(devon)
-#     db.session.commit()
-
-#     session['user'] = {
-#         'username' : 'dev123',
-#         'person_id' : 1
-#     }
-    
+def view_join_courses():    
     if 'user' not in session:
         return redirect('/login')
 
@@ -200,6 +179,7 @@ def view_all_courses():
     person=session['user']
     person_id=person['person_id']
     sections=project_repository_singleton.get_user_courses(person_id)
+    print(sections)
     return render_template('get_all_courses.html', courses=sections)
 
 @app.get('/courses/<int:section_id>')
@@ -207,6 +187,7 @@ def view_specific_course(section_id):
     person=session['user']
     person_id=person['person_id']
     courses=project_repository_singleton.get_user_courses(person_id)
+    
     posts=project_repository_singleton.get_all_posts()
     course=project_repository_singleton.get_sections_by_id(section_id)
     users=project_repository_singleton.get_all_user()
@@ -223,19 +204,27 @@ def view_specific_course(section_id):
     rooms["course"]=course
     return render_template('get_courses_chat.html',list_posts=list_posts,courses=courses,section=section_id,posts=posts,exam=course,users=users,person_id=person_id,person=person)
 
-@app.post('/courses/<int:post_id>/messages/edit')
-def edit_specific_message(post_id):
+@app.get('/courses/<int:post_id>/messages/edit')
+def get_edit_specific_post(post_id):
+    post=project_repository_singleton.get_post_by_id(post_id)
+    return render_template('edit_posts_form.html', post=post)
+
+@app.post('/courses')
+def update_post():
+    post_id=request.form.get('post-id')
+    print(post_id)
+    new_message=request.form.get('new-message')
+    project_repository_singleton.update_post(post_id,new_message)
     post=project_repository_singleton.get_post_by_id(post_id)
     print(post)
-    new_message=request.form.get('message')
-    project_repository_singleton.update_post(post_id,new_message)
-    print(post)
+    section=post.course
 
-    return redirect(f'/courses/{post.course}')
+    return redirect(f'/courses/{section}')
 
 @app.post('/courses/<int:post_id>/messages/delete')
 def delete_specific_message(post_id):
     post=project_repository_singleton.get_post_by_id(post_id)
+    print(post)
     section=post.course
     project_repository_singleton.delete_post(post_id)
     
@@ -243,7 +232,6 @@ def delete_specific_message(post_id):
 
 @socketio.on("connect")
 def connect(auth):
-    # adding comment to see if it's tracking
     user=rooms["user"]
     course=rooms["course"]
     join_room(course.section_id)
@@ -264,8 +252,6 @@ def handle_new_message(message):
     course=rooms["course"]
     date=datetime.datetime.now()
 
-    post=Post(user.person_id,course.section_id,date,message)
-    db.session.add(post)
-    db.session.commit()
+    project_repository_singleton.create_post(user.person_id,course.section_id,date,message)
 
     emit("chat",{"message": message,"username": user.user_name},broadcast=True)
