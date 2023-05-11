@@ -9,7 +9,7 @@ def test_signup_route_happy_route(test_client: FlaskClient):
     db.session.commit()
 
     # Make a request to the sign up page with valid credentials
-    response = test_client.post("/signup", data={"username": "testuser", "password": "testpassword", "email" : 'testemail@gmail.com', "bio":'testbio', 'university':"testuniversity"})
+    response = test_client.post("/signup", data={"username": "testuser", "password": "testpassword"})
 
     # Check that the response was successful
     assert response.status_code == 302
@@ -20,7 +20,7 @@ def test_signup_route_happy_route(test_client: FlaskClient):
 
 def test_signup_route_unhappy_route(test_client: FlaskClient):
     # Make a request to the sign up page with invalid credentials
-    response = test_client.post("/signup", data={"invaldusername": "", "invalidpassword": ""})
+    response = test_client.post("/signup", data={"username": "", "password": ""})
 
     # Check that the response was unsuccessful
     assert response.status_code == 400
