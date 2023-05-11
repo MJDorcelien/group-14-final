@@ -23,7 +23,7 @@ def test_signup_page_contains_signup_form(test_client: FlaskClient):
     response = test_client.get("/signup")
 
     # Check that the response contains a form with the expected action and method
-    assert "<form action = \"/signup\" method = POST>" in response.data.decode("utf-8")
+    assert "form action = \"/signup\" method = \"post\">" in response.data.decode("utf-8")
 
 
 # test that a user cannot register twice
@@ -48,7 +48,7 @@ def test_signup_page_contains_signup_button(test_client: FlaskClient):
     response = test_client.get("/signup")
 
     # Check that the response contains a button with the expected text
-    assert "<button type=\"button\" class=\"btn btn-warning\" value = \"signup\" name = \"button\" >Sign Up</button>" in response.data.decode("utf-8")
+    assert "<button type=\"submit\" class=\"btn btn-warning\" value = \"signup\" name = \"button\" >Sign Up</button>" in response.data.decode("utf-8")
 
 
 def test_signup_page_contains_login_link(test_client: FlaskClient):
@@ -56,7 +56,7 @@ def test_signup_page_contains_login_link(test_client: FlaskClient):
     response = test_client.get("/signup")
 
     # Check that the response contains a link with the expected text
-    assert "<p4>Have An Account <a href=\"/login\" style = \"color:goldenrod;\">Log In</a></p>" in response.data.decode("utf-8")
+    assert '<p4>Have An Account <a href=\"/login\" style = \"color:goldenrod;\">Log In</a></p>' in response.data.decode("utf-8")
 
 def test_email_input_field(test_client: FlaskClient):
     # Make a request to the sign up page

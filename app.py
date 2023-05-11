@@ -170,7 +170,6 @@ def signup():
         }
         return redirect('/courses')
     except:
-        db.session.rollback()
         return redirect('/signup')
     
 # logs out the user
