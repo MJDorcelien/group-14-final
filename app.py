@@ -93,7 +93,7 @@ def view_user_profile():
     if request.method == 'POST':
         # Get user input from the form
         full_name = request.form.get('full_name')
-        age = request.formget.get('age')
+        age = request.form.get('age')
         gender = request.form.get('gender')
         pronouns = request.form.get('pronouns')
         academic_year = request.form.get('academic_year')
@@ -101,11 +101,39 @@ def view_user_profile():
         concentration = request.form.get('concentration')
         bio = request.form.get('bio')
         
-        # Render the profile template with user input
+        current_user_id = session['user']['person_id']
+        # final
+        is_following = current_user.is_following(user_to_view)
+
+        # Render the profile template with user input and following status
         return render_template('get_user_profile.html', full_name=full_name, age=age, gender=gender, pronouns=pronouns,
-                               academic_year=academic_year, degree=degree, concentration=concentration, bio=bio)
+                               academic_year=academic_year, degree=degree, concentration=concentration, bio=bio,
+                               is_following=is_following)
     else:
         return render_template('get_user_profile.html')
+    
+@app.post('/follow')
+def follow_user():
+    if 'user' not in session:
+        abort(401)
+
+    user_id = request.form.get('user_id')
+    user_to_follow = Person.query.get(user_id)
+
+    if not user_to_follow:
+        abort(404)
+
+    current_user = Person.query.filter_by(user_name=session['user']['username']).first()
+
+    if current_user.is_following(user_to_follow):
+        current_user.unfollow(user_to_follow)
+        flash('User unfollowed', 'success')
+    else:
+        current_user.follow(user_to_follow)
+        flash('User followed', 'success')
+
+    db.session.commit()
+    return redirect(url_for('view_user_profile'))    
 
 @app.get('/login')
 def login_user():
