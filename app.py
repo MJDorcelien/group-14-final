@@ -85,11 +85,27 @@ def view_all_friends():
         return "You must be logged in to view this page. Login or Signup to view"
     return render_template('get_all_friends.html')
 
-@app.get('/profile')
+@app.post('/profile')
 def view_user_profile():
     if 'user' not in session:
         return "You must be logged in to view this page. Login or Signup to view"
-    return render_template('get_user_profile.html')
+
+    if request.method == 'POST':
+        # Get user input from the form
+        full_name = request.form.get('full_name')
+        age = request.formget.get('age')
+        gender = request.form.get('gender')
+        pronouns = request.form.get('pronouns')
+        academic_year = request.form.get('academic_year')
+        degree = request.form.get('degree')
+        concentration = request.form.get('concentration')
+        bio = request.form.get('bio')
+        
+        # Render the profile template with user input
+        return render_template('get_user_profile.html', full_name=full_name, age=age, gender=gender, pronouns=pronouns,
+                               academic_year=academic_year, degree=degree, concentration=concentration, bio=bio)
+    else:
+        return render_template('get_user_profile.html')
 
 @app.get('/login')
 def login_user():

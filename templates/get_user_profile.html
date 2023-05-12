@@ -63,12 +63,12 @@
           <div class="card shadow-sm">
             <div class="card-header bg-transparent text-center">
               <img class="profile_img" src="https://img.freepik.com/premium-vector/happy-graduate-student-with-diploma-wearing-robe-square-academic-cap_528132-75.jpg?w=2000" alt="student dp">
-              <h3>Steve Rodgers</h3>
-            </div>
-            <div class="card-body">
-              <p class="mb-0"><strong class="pr-1">Student ID: </strong>508050543</p>
-              <p class="mb-0"><strong class="pr-1">Class of: </strong>2023</p>
-            </div>
+              <h3>{{user_name}}</h3>
+          </div>
+          <div class="card-body">
+              <p class="mb-0"><strong class="pr-1">Student ID: </strong>{{ student_id }}</p>
+              <p class="mb-0"><strong class="pr-1">Class of: </strong>{{ class_year }}</p>
+          </div>
           </div>
         </div>
         <div class="col-lg-8">
@@ -79,32 +79,31 @@
             <div class="card-body pt-0">
               <table class="table table-bordered">
                 <tr>
-                    <th width="20%">Full Name</th>
-                    <td>Steven John Cena Rogers</td>
-                  </tr>
-                <tr>
-                <tr>
+                  <th width="20%">Full Name</th>
+                  <td>{{full_name}}</td>
+              </tr>
+              <tr>
                   <th width="20%">Age</th>
-                  <td>20</td>
-                </tr>
-                <tr>
+                  <td>{{age}}</td>
+              </tr>
+              <tr>
                   <th width="20%">Gender</th>
-                  <td>Male</td>
-                </tr>
-                <tr>
+                  <td>{{gender}}</td>
+              </tr>
+              <tr>
                   <th width="20%">Pronouns</th>
-                  <td>He/They</td>
-                </tr>    
-                  <th width="20%">Academic Year</th>
-                  <td>Standing Junior</td>
-                </tr>
-                <tr>
+                  <td>{{pronouns}}</td>
+              </tr>
+              <th width="20%">Academic Year</th>
+              <td>{{academic_year}}</td>
+              </tr>
+              <tr>
                   <th width="20%">Degree</th>
-                  <td>Bachelor of Science In Computer Science</td>
-                </tr>
-                <tr>
-                    <th width="20%">Concentration</th>
-                    <td>Software Engineering</td>
+                  <td>{{degree}}</td>
+              </tr>
+              <tr>
+                  <th width="20%">Concentration</th>
+                  <td>{{concentration}}</td>
                   </tr>
               </table>
             </div>
@@ -115,7 +114,7 @@
               <h3 class="mb-0"><i class="far fa-clone pr-1"></i>Bio</h3>
             </div>
             <div class="card-body pt-0">
-                <p class="mb-0" style="color: black;">Put a little bit about yourself here. (People can see this) </p>
+                <p class="mb-0" style="color: black;">{{ bio }}</p>
             </div>
           </div>
         </div>
