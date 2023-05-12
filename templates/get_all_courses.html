@@ -18,42 +18,46 @@
 
     <div class="container text-center">
         <div class="row align-items-start">
-            {% for course in courses %}
-                {% if course.main == True %}
-                    {% for class in courses %}
-                        {% if class.title == course.title %}
-                            {% if class.main==False %}
-                                <div class="col">
-                                    <div class="card bg-dark" style="width: 18rem;">
-                                        <img src="/static/images/com_sci_photo.png" class="card-img-top" alt="Computer Science">
-                                        <div class="card-body">
-                                            <h5 class="card-title text-start text-white">{{course.course}}</h5>
-                                            <h6 class="card-subtitle mb-2 text-body-secondary text-start text-white">{{course.title}}</h6>
-                                            <p class="card-text text-start text-white">{{course.description}}</p>
-                                            <a href="/courses/{{course.section_id}}" class="card-link btn btn-success" role="button">Course Chat</a>
-                                            <a href="/courses/{{class.section_id}}" class="card-link btn btn-secondary" role="button">Section Chat</a>
+            {% if courses %}
+                {% for course in courses %}
+                    {% if course.main == True %}
+                        {% for class in courses %}
+                            {% if class.title == course.title %}
+                                {% if class.main==False %}
+                                    <div class="col">
+                                        <div class="card bg-dark" style="width: 18rem;">
+                                            <img src="/static/images/com_sci_photo.png" class="card-img-top" alt="Computer Science">
+                                            <div class="card-body">
+                                                <h5 class="card-title text-start text-white">{{course.course}}</h5>
+                                                <h6 class="card-subtitle mb-2 text-body-secondary text-start text-white">{{course.title}}</h6>
+                                                <p class="card-text text-start text-white">{{course.description}}</p>
+                                                <a href="/courses/{{course.section_id}}" class="card-link btn btn-success" role="button">Course Chat</a>
+                                                <a href="/courses/{{class.section_id}}" class="card-link btn btn-secondary" role="button">Section Chat</a>
+                                            </div>
                                         </div>
+                                        <br><br>
                                     </div>
-                                    <br><br>
-                                </div>
-                            {% else %}
-                                <div class="col">
-                                    <div class="card bg-dark" style="width: 18rem;">
-                                        <img src="/static/images/com_sci_photo.png" class="card-img-top" alt="Computer Science">
-                                        <div class="card-body">
-                                            <h5 class="card-title text-start text-white">{{course.course}}</h5>
-                                            <h6 class="card-subtitle mb-2 text-body-secondary text-start text-white">{{course.title}}</h6>
-                                            <p class="card-text text-start text-white">{{course.description}}</p>
-                                            <a href="/courses/{{course.section_id}}" class="card-link btn btn-success" role="button">Course Chat</a>
+                                {% else %}
+                                    <div class="col">
+                                        <div class="card bg-dark" style="width: 18rem;">
+                                            <img src="/static/images/com_sci_photo.png" class="card-img-top" alt="Computer Science">
+                                            <div class="card-body">
+                                                <h5 class="card-title text-start text-white">{{course.course}}</h5>
+                                                <h6 class="card-subtitle mb-2 text-body-secondary text-start text-white">{{course.title}}</h6>
+                                                <p class="card-text text-start text-white">{{course.description}}</p>
+                                                <a href="/courses/{{course.section_id}}" class="card-link btn btn-success" role="button">Course Chat</a>
+                                            </div>
                                         </div>
+                                        <br><br>
                                     </div>
-                                    <br><br>
-                                </div>
+                                {% endif %}
                             {% endif %}
-                        {% endif %}
-                    {% endfor %}
-                {% endif %}
-            {% endfor %}
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+            {% else %}
+                <h3 class="text-white">No Courses Added</h3>
+            {% endif %}
         </div>
     </div>
 {% endblock %}

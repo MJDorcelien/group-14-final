@@ -13,4 +13,5 @@ def test_client():
         Post.query.delete()
         Person.query.delete()
         db.session.commit()
+        
         yield app.test_client()

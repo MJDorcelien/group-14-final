@@ -27,6 +27,14 @@ class Person(db.Model):
     password=db.Column(db.String(255), nullable=False)
     university=db.Column(db.String(50), nullable=False)
     course=db.relationship('Section', backref='courses',secondary=person_section,lazy=True)
+    # https://blog.ramosly.com/sqlalchemy-orm-setting-up-self-referential-many-to-many-relationships-866c97d9308b
+    followers = db.relationship(
+        'Person',
+        secondary=user_following,
+        primaryjoin=person_id == user_following.c.followee,
+        secondaryjoin=person_id == user_following.c.follower,
+        backref='following'
+    )
 
     def __init__(self,user_name:str,bio:str,email:str,password:str,university:str) -> None:
         self.user_name=user_name

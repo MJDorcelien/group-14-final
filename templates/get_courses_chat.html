@@ -24,10 +24,10 @@
             {% for course in courses %}
                 {% if course.title == exam.title %}
                     {% if course.main == True %}
-                        <p><a href="/courses/{{ course.section_id }}" class="card-link btn btn-success" role="button">{{ course.title }} {{course.section_id}}: Main Course Chat</a></p>
+                        <p><a href="/courses/{{ course.section_id }}" class="card-link btn btn-success" role="button">{{ course.title }}: Main Course Chat</a></p>
                     {% endif %}
                     {% if course.main == False %}
-                        <p><a href="/courses/{{ course.section_id }}" class="card-link btn btn-secondary" role="button">{{ course.title }} {{course.section_id}}: Section Course Chat</a></p>
+                        <p><a href="/courses/{{ course.section_id }}" class="card-link btn btn-secondary" role="button">{{ course.title }}: Section Course Chat</a></p>
                     {% endif %}
                 {% endif %}
             {% endfor %}
@@ -39,6 +39,9 @@
             <h3>{{exam.title}} Section Chat</h3>
             {% endif %}
             <div id="individual" class="container h-75 p-2 overflow-auto bg-dark rounded ">
+                {% if not list_posts %}
+                    <h4>No posts have been made</h4>
+                {% endif %}
                 {% for post in list_posts %}
                     {% if section == post.course %}
                         {% for user in users %}
@@ -56,7 +59,7 @@
                                         </div>
                                     </p>
                                 {% else %}
-                                    <p>{{user.user_name}}: {{post.content}}</p>
+                                    <p><strong>{{user.user_name}}</strong>: {{post.content}}</p>
                                 {% endif %}
                             {% endif %}
                         {% endfor %}
