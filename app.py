@@ -90,7 +90,11 @@ def add_courses():
 def view_all_friends():
     if 'user' not in session:
         return "You must be logged in to view this page. Login or Signup to view"
-    return render_template('get_all_friends.html')
+    person=session['user']
+    person_id=person['person_id']
+    following=project_repository_singleton.get_user_following(person_id)
+    followers=project_repository_singleton.get_user_followers(person_id)
+    return render_template('get_all_friends.html', following=following, followers=followers)
 
 @app.get('/profile')
 def view_user_profile():

@@ -4,43 +4,74 @@
 
 {% block body %}
     <h2>Your Friends</h2>
-    <!--<a href="/friends/profile">Individual Friend's Profile</a>
-    <p>this page is supposed to hold all the friends of the current user</p>
-    <p>should list users in mutual courses and actual friends</p>
-    <p>should also have a like to the friend's individual profile</p>
-    <h2>All Courses</h2> -->
-    <div class="container text-center">
-        <div class="row align-items-start">
-            <div class="col">
-                <div class="card bg-dark" style="width: 18rem;">
-                    <img src="/static/images/com_sci_photo.png" class="card-img-top" alt="Computer Science">
-                    <div class="card-body">
-                        <h5 class="card-title text-start text-white">Billy Bob</h5>
-                        <p class="card-text text-start text-white">Billy Bob's bombastic bio.</p>
-                        <a href="/friends/profile" class="card-link">View Profile</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card bg-dark" style="width: 18rem;">
-                    <img src="/static/images/com_sci_photo.png" class="card-img-top" alt="Computer Science">
-                    <div class="card-body">
-                        <h5 class="card-title text-start text-white">Billy Bob</h5>
-                        <p class="card-text text-start text-white">Billy Bob's bombastic bio.</p>
-                        <a href="/friends/profile" class="card-link">View Profile</a>
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card bg-dark" style="width: 18rem;">
-                    <img src="/static/images/com_sci_photo.png" class="card-img-top" alt="Computer Science">
-                    <div class="card-body">
-                        <h5 class="card-title text-start text-white">Billy Bob</h5>
-                        <p class="card-text text-start text-white">Billy Bob's bombastic bio.</p>
-                        <a href="/friends/profile" class="card-link">View Profile</a>
-                    </div>
-                </div>
-            </div>
-        </div>
+
+    <!-- Tab links -->
+    <div class="tabbable">
+        <ul class="nav nav-tabs">
+            <li class="nav-link" id="defaultActive" onclick="openTab(event, 'Following')">
+                Following
+            </li>
+            <li class="nav-link" onclick="openTab(event, 'Followers')">
+                Followers
+            </li>
+        </ul>
     </div>
+    
+    <!-- Following tab -->
+    <div id="Following" class="tabcontent">
+        <table class="table table-hover table-sm">
+            <tbody>
+                {% for followee in following %}
+                <tr>
+                    <td>
+                        <img style="height:64px;" alt="User profile image" src="https://st.depositphotos.com/2218212/2938/i/600/depositphotos_29387653-stock-photo-facebook-profile.jpg" />
+                        {{followee.user_name}}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- Followers tab-->
+    <div id="Followers" class="tabcontent">
+        <table class="table table-hover table-sm">
+            <tbody>
+                {% for follower in followers %}
+                <tr>
+                    <td>
+                        <img style="height:64px;" alt="User profile image" src="https://st.depositphotos.com/2218212/2938/i/600/depositphotos_29387653-stock-photo-facebook-profile.jpg" />
+                        {{follower.user_name}}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function openTab(evt, tabName) {
+        // Declare all variables
+        var i, tabcontent, tablinks;
+
+        // Get all elements with class="tabcontent" and hide them
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+
+        // Get all elements with class="nav-link" and remove "active" class
+        tablinks = document.getElementsByClassName("nav-link");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+
+        // Show the current tab, and add "active" class
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.className += " active";
+        }
+
+        // Get the element with id="defaultActive" and click on it
+        document.getElementById("defaultActive").click();
+    </script>
 {% endblock %}

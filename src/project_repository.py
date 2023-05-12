@@ -24,6 +24,22 @@ class ProjectRepository:
         user_courses=user.course
         return user_courses
     
+    def get_user_followers(self,person_id):
+        user = self.get_user_by_id(person_id)
+        user_followers=user.followers
+        return user_followers
+    
+    def get_user_following(self,person_id):
+        user = self.get_user_by_id(person_id)
+        user_following=user.followees
+        return user_following
+    
+    def create_user_follow(self, person_following_id, person_followed_id) -> None:
+        follower = self.get_user_by_id(person_following_id)
+        followee = self.get_user_by_id(person_followed_id)
+        followee.followers.append(follower)
+        db.session.commit()
+    
     # returns a person based on the person_id
     def get_user_by_id(self, person_id) -> Person:
         return Person.query.filter_by(person_id=person_id).first()
