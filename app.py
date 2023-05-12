@@ -90,11 +90,55 @@ def view_all_friends():
     followers=project_repository_singleton.get_user_followers(person_id)
     return render_template('get_all_friends.html', following=following, followers=followers)
 
-@app.get('/profile')
+@app.post('/profile')
 def view_user_profile():
     if 'user' not in session:
         return "You must be logged in to view this page. Login or Signup to view"
-    return render_template('get_user_profile.html')
+
+    if request.method == 'POST':
+        # Get user input from the form
+        full_name = request.form.get('full_name')
+        age = request.form.get('age')
+        gender = request.form.get('gender')
+        pronouns = request.form.get('pronouns')
+        academic_year = request.form.get('academic_year')
+        degree = request.form.get('degree')
+        concentration = request.form.get('concentration')
+        bio = request.form.get('bio')
+        
+        current_user_id = session['user']['person_id']
+        # final
+        is_following = current_user.is_following(user_to_view)
+
+        # Render the profile template with user input and following status
+        return render_template('get_user_profile.html', full_name=full_name, age=age, gender=gender, pronouns=pronouns,
+                               academic_year=academic_year, degree=degree, concentration=concentration, bio=bio,
+                               is_following=is_following)
+    else:
+        return render_template('get_user_profile.html')
+    
+@app.post('/follow')
+def follow_user():
+    if 'user' not in session:
+        abort(401)
+
+    user_id = request.form.get('user_id')
+    user_to_follow = Person.query.get(user_id)
+
+    if not user_to_follow:
+        abort(404)
+
+    current_user = Person.query.filter_by(user_name=session['user']['username']).first()
+
+    if current_user.is_following(user_to_follow):
+        current_user.unfollow(user_to_follow)
+        flash('User unfollowed', 'success')
+    else:
+        current_user.follow(user_to_follow)
+        flash('User followed', 'success')
+
+    db.session.commit()
+    return redirect(url_for('view_user_profile'))    
 
 @app.get('/login')
 def login_user():
